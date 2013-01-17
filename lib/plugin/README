@@ -1,0 +1,12 @@
+To compile a Protocol Buffer definition (.proto) file using Dart:
+
+1) Place 'protoc' on your path (source code at: http://code.google.com/p/protobuf/)
+2) Place the 'protoc-gen-dart' script on your path
+3) Place a standalone 'dart' executable on your path
+4) Create an output directory 'out'
+5) Run:
+
+protoc --dart_out=out <proto_file>
+
+For example, 'protoc --dart_out=out descriptor.proto' will create a file out/descriptor.pb.dart
+that should be identical to the pre-compiled version in protoc/descriptor.pb.dart.

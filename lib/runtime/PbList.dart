@@ -1,0 +1,409 @@
+// Copyright (c) 2011, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+
+typedef B PartialFunction<A,B>(A a);
+
+class PbList<E> implements List<E> {
+
+  PbList(this._listener)
+    : _mutableList = null,
+      _immutableList = const [] {
+    _wrappedList = _immutableList;
+  }
+
+  PbList.from(List from, this._listener)
+    : _mutableList = null {
+    if (from is PbImmutableList) {
+      _immutableList = from;
+    } else {
+      _immutableList = new PbImmutableList.from(from);
+    }
+    _wrappedList = _immutableList;
+  }
+
+  /**
+   * Returns an [Iterator] for the list.
+   */
+  Iterator<E> iterator() => _wrappedList.iterator();
+
+  /**
+   * Returns the element at the given [index] in the list or throws
+   * an [IndexOutOfRangeException] if [index] is out of bounds.
+   */
+  E operator [](int index) => _wrappedList[index];
+
+  /**
+   * Sets the entry at the given [index] in the list to [value].
+   * Throws an [IndexOutOfRangeException] if [index] is out of bounds.
+   */
+  void operator []=(int index, E value) {
+    _validate(value);
+    _ensureMutable();
+    _wrappedList[index] = value;
+    _modified();
+  }
+
+  /**
+   * Unsupported -- violated non-null constraint imposed by protobufs.
+   *
+   * Changes the length of the list. If [newLength] is greater than
+   * the current [length], entries are initialized to [:null:]. Throws
+   * an [UnsupportedOperationException] if the list is not extendable.
+   */
+  void set length(int newLength) {
+    throw const UnsupportedOperationException("length");
+  }
+
+  /**
+   * Adds [value] at the end of the list, extending the length by
+   * one. Throws an [UnsupportedOperationException] if the list is not
+   * extendable.
+   */
+  void add(E value) {
+    _validate(value);
+    _ensureMutable();
+    _wrappedList.add(value);
+    _modified();
+  }
+
+  /**
+   * Adds [value] at the end of the list, extending the length by
+   * one. Throws an [UnsupportedOperationException] if the list is not
+   * extendable.
+   */
+  void addLast(E value) {
+    add(value);
+  }
+
+  /**
+   * Appends all elements of the [collection] to the end of list.
+   * Extends the length of the list by the length of [collection].
+   * Throws an [UnsupportedOperationException] if the list is not
+   * extendable.
+   */
+  void addAll(Collection<E> collection) {
+    collection.forEach((E i){ _validate(i); });
+    _ensureMutable();
+    _wrappedList.addAll(collection);
+    _modified();
+  }
+
+  /**
+   * Sorts the list according to the order specified by the comparator.
+   * The order specified by the comparator must be reflexive,
+   * anti-symmetric, and transitive.
+   *
+   * The comparator function [compare] must take two arguments [a] and [b]
+   * and return
+   *
+   *   an integer strictly less than 0 if a < b,
+   *   0 if a = b, and
+   *   an integer strictly greater than 0 if a > b.
+   */
+  void sort(int compare(E a, E b)) {
+    _ensureMutable();
+    _wrappedList.sort(compare);
+    _modified();
+  }
+
+  /**
+   * Returns the first index of [element] in this list. Searches this
+   * list from index [start] to the length of the list. Returns
+   * -1 if [element] is not found.
+   */
+  int indexOf(E element, [int start = 0]) =>
+      _wrappedList.indexOf(element, start);
+
+  /**
+   * Returns the last index of [element] in this list. Searches this
+   * list from index [start] (inclusive) to 0. Returns -1 if
+   * [element] is not found.
+   */
+  int lastIndexOf(E element, [int start = null]) =>
+      _wrappedList.lastIndexOf(element, start);
+
+  /**
+   * Removes all elements in the list. The length of the list
+   * becomes zero. Throws an [UnsupportedOperationException] if
+   * the list is not extendable.
+   */
+  void clear() {
+    _ensureMutable();
+    _wrappedList.clear();
+    _modified();
+  }
+
+  /**
+   * Pops and returns the last element of the list.
+   * Throws a [UnsupportedOperationException] if the length of the
+   * list cannot be changed.
+   */
+  E removeLast() {
+    _ensureMutable();
+    var value = _wrappedList.removeLast();
+    _modified();
+    return value;
+  }
+
+  /**
+   * Returns the last element of the list, or throws an out of bounds
+   * exception if the list is empty.
+   */
+  E last() => _wrappedList.last();
+
+  /**
+   * Returns a sub list copy of this list, from [start] to
+   * [:start + length:].
+   * Returns an empty list if [length] is 0.
+   * Throws an [IllegalArgumentException] if [length] is negative.
+   * Throws an [IndexOutOfRangeException] if [start] or
+   * [:start + length:] are out of range.
+   */
+  List<E> getRange(int start, int length) =>
+      _wrappedList.getRange(start, length);
+
+  /**
+   * Copies [length] elements of the [from] array, starting
+   * from [startFrom], into [:this:], starting at [start].
+   * Throws an [UnsupportedOperationException] if the list is
+   * not extendable.
+   * If [length] is 0, this method does not do anything.
+   * Throws an [IllegalArgumentException] if [length] is negative.
+   * Throws an [IndexOutOfRangeException] if [start] or
+   * [:start + length:] are out of range for [:this:], or if
+   * [startFrom] is out of range for [from].
+   */
+  void setRange(int start, int length, List<E> from, [int startFrom = 0]) {
+    from.getRange(startFrom, length).forEach((E i){ return _validate(i); });
+    _ensureMutable();
+    _wrappedList.setRange(start, length, from, startFrom);
+    _modified();
+  }
+
+  /**
+   * Removes the range in the list starting from [start] to
+   * [:start + length:].
+   * Throws an [UnsupportedOperationException] if the list is
+   * not extendable.
+   * If [length] is 0, this method does not do anything.
+   * Throws an [IllegalArgumentException] if [length] is negative.
+   * Throws an [IndexOutOfRangeException] if [start] or
+   * [:start + length:] are out of range.
+   */
+  void removeRange(int start, int length) {
+    _ensureMutable();
+    _wrappedList.removeRange(start, length);
+    _modified();
+  }
+
+  /**
+   * UNSUPPORTED. Not of clear value.
+   *
+   * Inserts a new range in the list, starting from [start] to
+   * [:start + length:]. The entries are filled with [initialValue].
+   * Throws an [UnsupportedOperationException] if the list is
+   * not extendable.
+   * If [length] is 0, this method does not do anything.
+   * If [start] is the length of the array, this method inserts the
+   * range at the end of the array.
+   * Throws an [IllegalArgumentException] if [length] is negative.
+   * Throws an [IndexOutOfRangeException] if [start] or
+   * [:start + length:] are out of range.
+   */
+  void insertRange(int start, int length, [E initialValue]) {
+    throw const UnsupportedOperationException("insertRange");
+  }
+
+  /**
+   * Applies the function [f] to each element of this collection.
+   */
+  void forEach(void f(E element)) => _wrappedList.forEach(f);
+
+  /**
+   * Returns a new collection with the elements of this collection
+   * that satisfy the predicate [f].
+   *
+   * An element satisfies the predicate [f] if [:f(element):]
+   * returns true.
+   */
+  Collection<E> filter(bool f(E element)) => _wrappedList.filter(f);
+
+  /**
+   * Returns true if every elements of this collection satisify the
+   * predicate [f]. Returns false otherwise.
+   */
+  bool every(bool f(E element)) => _wrappedList.every(f);
+
+  /**
+   * Returns true if one element of this collection satisfies the
+   * predicate [f]. Returns false otherwise.
+   */
+  bool some(bool f(E element)) => _wrappedList.some(f);
+
+  /**
+   * Returns true if there is no element in this collection.
+   */
+  bool isEmpty() => _wrappedList.isEmpty;
+
+  /**
+   * Returns the number of elements in this collection.
+   */
+  int get length => _wrappedList.length;
+
+  /*
+   * Return immutable copy of the list.
+   */
+  List<E> asImmutable([PartialFunction<E, E> transform = null]) {
+    if (_immutableList == null) {
+      if (transform == null) {
+        _immutableList = new PbImmutableList.from(_mutableList);
+      } else {
+        List<E> tempList = new List(_mutableList.length);
+        int i = 0;
+        for (E e in _mutableList) {
+          tempList[i] = transform(e);
+          i++;
+        }
+        _immutableList = new PbImmutableList.from(tempList);
+      }
+      _wrappedList = _immutableList;
+      _mutableList = null;
+    }
+    return _immutableList;
+  }
+
+  void _validate(E val) {
+    if (val === null) {
+      throw new NullPointerException();
+    }
+    // Note: the generic parameter [E] is not preserved by the dart2js compiler.
+    // For this reason, in that context both `val is E` and `val is! E` return
+    // true. We write this condition as `!(val isE)` so that the check is done
+    // at least on the dartvm.
+    // TODO(rice,sigmund): remove this trick.
+    if (!(val is E)) {
+      throw new IllegalArgumentException(
+          "Value ($val) is not of the correct type");
+    }
+  }
+
+  void _ensureMutable() {
+    if (_mutableList == null) {
+      _mutableList = new List.from(_immutableList);
+      _wrappedList = _mutableList;
+      _immutableList = null;
+    }
+  }
+
+  void _modified() {
+    // clear local cache of _immutableList
+    if (_listener !== null) _listener.onChanged();
+  }
+
+  Collection map(f(E element)) {
+    throw "not implemented";
+  }
+
+  ChangeListener _listener;
+  List<E> _mutableList;
+  List<E> _immutableList;
+  List<E> _wrappedList;
+}
+
+/**
+ * A [PbList] that requires its elements to be [int]s in the range
+ * [:-2^31, 2^31 - 1:].
+ */
+class PbSint32List extends PbList<int> {
+
+  PbSint32List(ChangeListener listener) : super(listener);
+
+  void _validate(int val) {
+    super._validate(val);
+    if (val < _Constants.MIN_SINT32 || val > _Constants.MAX_SINT32) {
+      throw new IllegalArgumentException("Illegal to add value (${val}): out "
+          "of range for int32");
+    }
+  }
+}
+
+/**
+ * A [PbList] that requires its elements to be [int]s in the range
+ * [:0, 2^32 - 1:].
+ */
+class PbUint32List extends PbList<int> {
+
+  PbUint32List(ChangeListener listener) : super(listener);
+
+  void _validate(int val) {
+    super._validate(val);
+    if (val < 0 || val > _Constants.MAX_UINT32) {
+      throw new IllegalArgumentException("Illegal to add value (${val}):"
+          " out of range for uint32");
+    }
+  }
+}
+
+/**
+ * A [PbList] that requires its elements to be [int]s in the range
+ * [:2^-63, 2^63 - 1:] or instances of [Packed64].
+ */
+//class PbSint64List extends PbList<Dynamic> {
+class PbSint64List extends PbList {
+  PbSint64List(ChangeListener listener) : super(listener);
+
+  void _validate(int val) {
+    super._validate(val);
+    if (val is Packed64) {
+      return;
+    } else if ((val is num) && (val.floor() == val)) {
+      if (val < _Constants.MIN_SINT64 || val > _Constants.MAX_SINT64) {
+         throw new IllegalArgumentException("Illegal to add value (${val}):"
+             " out of range for sint64");
+      }
+    } else {
+      throw new IllegalArgumentException("Value is not int or Packed64");
+    }
+  }
+}
+
+/**
+ * A [PbList] that requires its elements to be [int]s in the range
+ * [:0, 2^64 - 1:] or instances of [Packed64].
+ */
+//class PbUint64List extends PbList<Dynamic> {
+class PbUint64List extends PbList {
+  PbUint64List(ChangeListener listener) : super(listener);
+
+  void _validate(int val) {
+    super._validate(val);
+    if (val is Packed64) {
+      return;
+    } else if ((val is num) && (val.floor() == val)) {
+      if (val < 0 || val > _Constants.MAX_UINT64) {
+        throw new IllegalArgumentException("Illegal to add value (${val}):"
+            " out of range for uint64");
+      }
+    } else {
+      throw new IllegalArgumentException("Value is not int or Packed64");
+    }
+  }
+}
+
+/**
+ * A [PbList] that requires its elements to be [double]s in the range
+ * [:-3.4E38, 3.4E38:], i.e., with the IEEE single-precision range.
+ */
+class PbFloatList extends PbList<double> {
+
+  PbFloatList(ChangeListener listener) : super(listener);
+
+  void _validate(double val) {
+    super._validate(val);
+    if (val < -_Constants.MAX_FLOAT || val > _Constants.MAX_FLOAT) {
+      throw new IllegalArgumentException("Illegal to add value (${val}):"
+          " out of range for float");
+    }
+  }
+}
