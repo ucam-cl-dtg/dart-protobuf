@@ -2,17 +2,19 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+part of protobuf;
+
 class WireFormat {
 
-  static final int TAG_TYPE_BITS = 3;
-  static final int TAG_TYPE_MASK = (1 << TAG_TYPE_BITS) - 1;
+  static const int TAG_TYPE_BITS = 3;
+  static const int TAG_TYPE_MASK = (1 << TAG_TYPE_BITS) - 1;
 
-  static final int WIRETYPE_VARINT = 0;
-  static final int WIRETYPE_FIXED64 = 1;
-  static final int WIRETYPE_LENGTH_DELIMITED = 2;
-  static final int WIRETYPE_START_GROUP = 3;
-  static final int WIRETYPE_END_GROUP = 4;
-  static final int WIRETYPE_FIXED32 = 5;
+  static const int WIRETYPE_VARINT = 0;
+  static const int WIRETYPE_FIXED64 = 1;
+  static const int WIRETYPE_LENGTH_DELIMITED = 2;
+  static const int WIRETYPE_START_GROUP = 3;
+  static const int WIRETYPE_END_GROUP = 4;
+  static const int WIRETYPE_FIXED32 = 5;
 
   static int getTagFieldNumber(int tag) {
     return (tag & 0x7fffffff) >> TAG_TYPE_BITS; // >>>

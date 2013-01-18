@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+part of protobuf_generator;
+
 class MessageGenerator implements ProtobufContainer {
 
   // Variables controlling output prettiness
@@ -28,12 +30,12 @@ class MessageGenerator implements ProtobufContainer {
   MessageGenerator(GoogleProtobuf_DescriptorProto this._descriptor,
       ProtobufContainer this._parent, GenerationContext this._context) {
     String name = _descriptor.name;
-    _classname = (_parent === null || _parent.classname == "") ?
+    _classname = (_parent == null || _parent.classname == "") ?
         name :
         "${_parent.classname}_${name}";
 
     _builderClassname = "${_classname}_Builder";
-    _fqname = (_parent === null || _parent.fqname === null) ? _descriptor.name :
+    _fqname = (_parent == null || _parent.fqname == null) ? _descriptor.name :
         ( _parent.fqname == "." ?
             ".${_descriptor.name}" :
             "${_parent.fqname}.${_descriptor.name}" );

@@ -1,6 +1,9 @@
  ///
 //  Generated code. Do not modify.
 ///
+
+part of protobuf_generator;
+
 class GoogleProtobufCompiler_CodeGeneratorRequest extends GeneratedMessage {
   static GoogleProtobufCompiler_CodeGeneratorRequest _d;
   static GoogleProtobufCompiler_CodeGeneratorRequest_Builder newBuilder() => new GoogleProtobufCompiler_CodeGeneratorRequest_Builder();

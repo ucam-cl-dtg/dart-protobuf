@@ -1,6 +1,9 @@
 ///
 //  Generated code. Do not modify.
 ///
+
+part of protobuf_generator;
+
 class GoogleProtobuf_FileDescriptorSet extends GeneratedMessage {
   static GoogleProtobuf_FileDescriptorSet _d;
   static GoogleProtobuf_FileDescriptorSet_Builder newBuilder() => new GoogleProtobuf_FileDescriptorSet_Builder();
@@ -249,47 +252,47 @@ class GoogleProtobuf_DescriptorProto_Builder extends Builder {
 }
 
 class GoogleProtobuf_FieldDescriptorProto_Type extends ProtobufEnum implements Hashable {
-  static GoogleProtobuf_FieldDescriptorProto_Type get TYPE_DOUBLE => values[0];
-  static GoogleProtobuf_FieldDescriptorProto_Type get TYPE_FLOAT => values[1];
-  static GoogleProtobuf_FieldDescriptorProto_Type get TYPE_INT64 => values[2];
-  static GoogleProtobuf_FieldDescriptorProto_Type get TYPE_UINT64 => values[3];
-  static GoogleProtobuf_FieldDescriptorProto_Type get TYPE_INT32 => values[4];
-  static GoogleProtobuf_FieldDescriptorProto_Type get TYPE_FIXED64 => values[5];
-  static GoogleProtobuf_FieldDescriptorProto_Type get TYPE_FIXED32 => values[6];
-  static GoogleProtobuf_FieldDescriptorProto_Type get TYPE_BOOL => values[7];
-  static GoogleProtobuf_FieldDescriptorProto_Type get TYPE_STRING => values[8];
-  static GoogleProtobuf_FieldDescriptorProto_Type get TYPE_GROUP => values[9];
-  static GoogleProtobuf_FieldDescriptorProto_Type get TYPE_MESSAGE => values[10];
-  static GoogleProtobuf_FieldDescriptorProto_Type get TYPE_BYTES => values[11];
-  static GoogleProtobuf_FieldDescriptorProto_Type get TYPE_UINT32 => values[12];
-  static GoogleProtobuf_FieldDescriptorProto_Type get TYPE_ENUM => values[13];
-  static GoogleProtobuf_FieldDescriptorProto_Type get TYPE_SFIXED32 => values[14];
-  static GoogleProtobuf_FieldDescriptorProto_Type get TYPE_SFIXED64 => values[15];
-  static GoogleProtobuf_FieldDescriptorProto_Type get TYPE_SINT32 => values[16];
-  static GoogleProtobuf_FieldDescriptorProto_Type get TYPE_SINT64 => values[17];
+  static const GoogleProtobuf_FieldDescriptorProto_Type TYPE_DOUBLE = const GoogleProtobuf_FieldDescriptorProto_Type._(0, 1, 'TYPE_DOUBLE');
+  static const GoogleProtobuf_FieldDescriptorProto_Type TYPE_FLOAT = const GoogleProtobuf_FieldDescriptorProto_Type._(1, 2, 'TYPE_FLOAT');
+  static const GoogleProtobuf_FieldDescriptorProto_Type TYPE_INT64 = const GoogleProtobuf_FieldDescriptorProto_Type._(2, 3, 'TYPE_INT64');
+  static const GoogleProtobuf_FieldDescriptorProto_Type TYPE_UINT64 = const GoogleProtobuf_FieldDescriptorProto_Type._(3, 4, 'TYPE_UINT64');
+  static const GoogleProtobuf_FieldDescriptorProto_Type TYPE_INT32 = const GoogleProtobuf_FieldDescriptorProto_Type._(4, 5, 'TYPE_INT32');
+  static const GoogleProtobuf_FieldDescriptorProto_Type TYPE_FIXED64 = const GoogleProtobuf_FieldDescriptorProto_Type._(5, 6, 'TYPE_FIXED64');
+  static const GoogleProtobuf_FieldDescriptorProto_Type TYPE_FIXED32 = const GoogleProtobuf_FieldDescriptorProto_Type._(6, 7, 'TYPE_FIXED32');
+  static const GoogleProtobuf_FieldDescriptorProto_Type TYPE_BOOL = const GoogleProtobuf_FieldDescriptorProto_Type._(7, 8, 'TYPE_BOOL');
+  static const GoogleProtobuf_FieldDescriptorProto_Type TYPE_STRING = const GoogleProtobuf_FieldDescriptorProto_Type._(8, 9, 'TYPE_STRING');
+  static const GoogleProtobuf_FieldDescriptorProto_Type TYPE_GROUP = const GoogleProtobuf_FieldDescriptorProto_Type._(9, 10, 'TYPE_GROUP');
+  static const GoogleProtobuf_FieldDescriptorProto_Type TYPE_MESSAGE = const GoogleProtobuf_FieldDescriptorProto_Type._(10, 11, 'TYPE_MESSAGE');
+  static const GoogleProtobuf_FieldDescriptorProto_Type TYPE_BYTES = const GoogleProtobuf_FieldDescriptorProto_Type._(11, 12, 'TYPE_BYTES');
+  static const GoogleProtobuf_FieldDescriptorProto_Type TYPE_UINT32 = const GoogleProtobuf_FieldDescriptorProto_Type._(12, 13, 'TYPE_UINT32');
+  static const GoogleProtobuf_FieldDescriptorProto_Type TYPE_ENUM = const GoogleProtobuf_FieldDescriptorProto_Type._(13, 14, 'TYPE_ENUM');
+  static const GoogleProtobuf_FieldDescriptorProto_Type TYPE_SFIXED32 = const GoogleProtobuf_FieldDescriptorProto_Type._(14, 15, 'TYPE_SFIXED32');
+  static const GoogleProtobuf_FieldDescriptorProto_Type TYPE_SFIXED64 = const GoogleProtobuf_FieldDescriptorProto_Type._(15, 16, 'TYPE_SFIXED64');
+  static const GoogleProtobuf_FieldDescriptorProto_Type TYPE_SINT32 = const GoogleProtobuf_FieldDescriptorProto_Type._(16, 17, 'TYPE_SINT32');
+  static const GoogleProtobuf_FieldDescriptorProto_Type TYPE_SINT64 = const GoogleProtobuf_FieldDescriptorProto_Type._(17, 18, 'TYPE_SINT64');
   static List<GoogleProtobuf_FieldDescriptorProto_Type> _byIndex;
   static Map<int, GoogleProtobuf_FieldDescriptorProto_Type> _byValue;
 
   static void _init() {
     _byIndex = const [
-      const GoogleProtobuf_FieldDescriptorProto_Type._(0, 1, 'TYPE_DOUBLE'),
-      const GoogleProtobuf_FieldDescriptorProto_Type._(1, 2, 'TYPE_FLOAT'),
-      const GoogleProtobuf_FieldDescriptorProto_Type._(2, 3, 'TYPE_INT64'),
-      const GoogleProtobuf_FieldDescriptorProto_Type._(3, 4, 'TYPE_UINT64'),
-      const GoogleProtobuf_FieldDescriptorProto_Type._(4, 5, 'TYPE_INT32'),
-      const GoogleProtobuf_FieldDescriptorProto_Type._(5, 6, 'TYPE_FIXED64'),
-      const GoogleProtobuf_FieldDescriptorProto_Type._(6, 7, 'TYPE_FIXED32'),
-      const GoogleProtobuf_FieldDescriptorProto_Type._(7, 8, 'TYPE_BOOL'),
-      const GoogleProtobuf_FieldDescriptorProto_Type._(8, 9, 'TYPE_STRING'),
-      const GoogleProtobuf_FieldDescriptorProto_Type._(9, 10, 'TYPE_GROUP'),
-      const GoogleProtobuf_FieldDescriptorProto_Type._(10, 11, 'TYPE_MESSAGE'),
-      const GoogleProtobuf_FieldDescriptorProto_Type._(11, 12, 'TYPE_BYTES'),
-      const GoogleProtobuf_FieldDescriptorProto_Type._(12, 13, 'TYPE_UINT32'),
-      const GoogleProtobuf_FieldDescriptorProto_Type._(13, 14, 'TYPE_ENUM'),
-      const GoogleProtobuf_FieldDescriptorProto_Type._(14, 15, 'TYPE_SFIXED32'),
-      const GoogleProtobuf_FieldDescriptorProto_Type._(15, 16, 'TYPE_SFIXED64'),
-      const GoogleProtobuf_FieldDescriptorProto_Type._(16, 17, 'TYPE_SINT32'),
-      const GoogleProtobuf_FieldDescriptorProto_Type._(17, 18, 'TYPE_SINT64'),
+      TYPE_DOUBLE,
+      TYPE_FLOAT,
+      TYPE_INT64,
+      TYPE_UINT64,
+      TYPE_INT32,
+      TYPE_FIXED64,
+      TYPE_FIXED32,
+      TYPE_BOOL,
+      TYPE_STRING,
+      TYPE_GROUP,
+      TYPE_MESSAGE,
+      TYPE_BYTES,
+      TYPE_UINT32,
+      TYPE_ENUM,
+      TYPE_SFIXED32,
+      TYPE_SFIXED64,
+      TYPE_SINT32,
+      TYPE_SINT64,
     ];
     _byValue = ProtobufEnum.initByValue(_byIndex);
   }
@@ -302,15 +305,6 @@ class GoogleProtobuf_FieldDescriptorProto_Type extends ProtobufEnum implements H
   static GoogleProtobuf_FieldDescriptorProto_Type valueOf(int value) {
     if (null == _byValue) _init();
     return _byValue[value];
-  }
-
-  bool operator ==(Object o) {
-    if (o is GoogleProtobuf_FieldDescriptorProto_Type) {
-      GoogleProtobuf_FieldDescriptorProto_Type p = o;
-      return value == p.value;
-    } else {
-      return false;
-    }
   }
 
   const GoogleProtobuf_FieldDescriptorProto_Type._(int i, int v, String n) : super(i, v, n);

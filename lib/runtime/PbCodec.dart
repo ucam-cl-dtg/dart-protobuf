@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+part of protobuf;
+
 class _Constants {
   static final int MIN_SINT32 = -2147483648;
   static final int MAX_SINT32 =  2147483647;
@@ -73,12 +75,12 @@ class _Constants {
   // 2^-1022 (smallest double non-denorm)
   static final double POWER_MINUS_1022 = 2.2250738585072014E-308;
 
-  static final List<double> powers = const [
+  static final List<double> powers = [
     POWER_512, POWER_256, POWER_128, POWER_64, POWER_32, POWER_16, POWER_8,
     POWER_4, POWER_2, POWER_1
   ];
 
-  static final List<double> invPowers = const [
+  static final List<double> invPowers = [
     POWER_MINUS_512, POWER_MINUS_256, POWER_MINUS_128, POWER_MINUS_64,
     POWER_MINUS_32, POWER_MINUS_16, POWER_MINUS_8, POWER_MINUS_4, POWER_MINUS_2,
     POWER_MINUS_1
@@ -113,20 +115,20 @@ class Packed64 {
   static final bool _allowSoftInts = true;
 
   bool get _softInts =>
-      (null !== _haveBigIntsCached && _haveBigIntsCached) ||
-      (null !== _allowSoftInts && _allowSoftInts);
+      (null != _haveBigIntsCached && _haveBigIntsCached) ||
+      (null != _allowSoftInts && _allowSoftInts);
 
   /**
    * Constructs a [Packed64] instance with given high and low 32-bit words.
-   * Throws [:IllegalArgumentException:] if either the [lo] or [hi] int is
+   * Throws [:ArgumentError:] if either the [lo] or [hi] int is
    * outside the range of a signed 32-bit INT.
    */
   Packed64(int hi, int lo) {
     if (hi < -_Constants.POWER_32_INT || hi >= _Constants.POWER_32_INT) {
-      throw new IllegalArgumentException("Hi value out of range: $hi");
+      throw new ArgumentError("Hi value out of range: $hi");
     }
     if (lo < -_Constants.POWER_32_INT || lo >= _Constants.POWER_32_INT) {
-      throw new IllegalArgumentException("Lo value out of range: $lo");
+      throw new ArgumentError("Lo value out of range: $lo");
     }
     _packed = new int64.fromInts(hi, lo);
   }
@@ -144,12 +146,12 @@ class Packed64 {
    * bit pattern.
    */
   factory Packed64.fromDouble(double d) {
-    if (d.isNaN()) {
+    if (d.isNaN) {
       return new Packed64(0x7ff80000, 0x0);
     }
 
     bool negative = false;
-    if (d.isNegative()) {
+    if (d.isNegative) {
       negative = true;
       d = -d;
     }
@@ -160,7 +162,7 @@ class Packed64 {
         return new Packed64(0x0, 0x0);
       }
     }
-    if (d.isInfinite()) {
+    if (d.isInfinite) {
       if (negative) {
         return new Packed64(0xfff00000, 0x0);
       } else {
@@ -226,35 +228,35 @@ class Packed64 {
 
   /**
    * Constructs a [Packed64] instance from a variable-length representation.
-   * Throws an [:IllegalArgumentException:] if the encoding is invalid.
+   * Throws an [:ArgumentError:] if the encoding is invalid.
    */
   Packed64.fromVarintBytes(List<int> b) {
     try {
       _packed = int64.ZERO;
       int i = 0;
-      bool lastByte = ((b[i] & _Constants.MIN_BITS_8) === 0);
+      bool lastByte = ((b[i] & _Constants.MIN_BITS_8) == 0);
       while (i < 10 && !lastByte) {
         _orShifted(b[i] & _Constants.MAX_BITS_7,
             _Constants.SEPTET_BIT_COUNT * i);
         i++;
-        lastByte = (b[i] & _Constants.MIN_BITS_8) === 0;
+        lastByte = (b[i] & _Constants.MIN_BITS_8) == 0;
       }
       _orShifted(b[i] & _Constants.MAX_BITS_7,
           _Constants.SEPTET_BIT_COUNT * i);
-    } catch (IndexOutOfRangeException e) {
-      throw new IllegalArgumentException("Invalid Encoding");
+    } on RangeError catch (e) {
+      throw new ArgumentError("Invalid Encoding");
     }
   }
 
   /**
    * Constructs a [Packed64] instance whose value is equivalent to the given
-   * value. Throws an [:IllegalArgumentException:] if the value is &lt;
+   * value. Throws an [:ArgumentError:] if the value is &lt;
    * -9223372036854775808 (MIN_SINT64) or &gt; 18446744073709551615
    * (MAZ_UINT64).
    */
   Packed64.fromInt(int x) {
     if (x < -9223372036854775808 || x > 18446744073709551615) {
-      throw new IllegalArgumentException("Out of range: $x");
+      throw new ArgumentError("Out of range: $x");
     }
     _packed = new int64.fromInt(x);
   }
@@ -274,7 +276,7 @@ class Packed64 {
 
 
   int get hashCode {
-    return _packed.hashCode();
+    return _packed.hashCode;
   }
   
 
@@ -373,7 +375,7 @@ class Packed64 {
       ilo = ((ihi % 128) * _Constants.POWER_25_INT) + (ilo ~/ 128);
       ihi ~/= 128;
       i++;
-      if (ihi === 0 && ilo === 0) {
+      if (ihi == 0 && ilo == 0) {
         return i;
       }
     }
@@ -445,7 +447,7 @@ class Packed64 {
   /**
    * Return the value of this [Packed64] as an int if the resulting value
    * is in the legal range of [-2^51, 2^51 -1], otherwise throw an
-   * IllegalArgumentException.
+   * ArgumentError.
    */
   int toInt() => _packed.toInt();
 
@@ -453,7 +455,7 @@ class Packed64 {
    * Return the value of this [Packed64] as an int if the resulting value
    * is in the legal range of [-2^51, 2^51 -1], otherwise return [this].
    */
-  Dynamic toIntIfSafe() {
+  toIntIfSafe() {
     if (_softInts && this.isSafeAsInt()) {
       return this.toInt();
     }
@@ -463,11 +465,11 @@ class Packed64 {
   /**
    * Return the value of this [Packed64] as an int if the resulting value
    * is in the legal range of [0, 2^52 -1], otherwise throw an
-   * IllegalArgumentException.
+   * ArgumentError.
    */
   int toUint() {
     if (!isSafeAsUint()) {
-      throw new IllegalArgumentException("Out of range");
+      throw new ArgumentError("Out of range");
     }
     int value = this.hi * _Constants.POWER_32_INT + this.lo;
     return value;
@@ -477,7 +479,7 @@ class Packed64 {
    * Return the value of this [Packed64] as an int if the resulting value
    * is in the legal range of [0, 2^52 -1], otherwise return [this].
    */
-  Dynamic toUintIfSafe() {
+  toUintIfSafe() {
     if (_softInts && this.isSafeAsUint()) {
       return this.toUint();
     }
@@ -530,34 +532,34 @@ class Packed64 {
  * format.
  */
 class PbCodec {
-  static bool toBool(List<int> b) => b[0] !== 0;
+  static bool toBool(List<int> b) => b[0] != 0;
 
   static int toFixed32(List<int> b) => packedToUint32(bytesToPacked(b));
 
   // return value may be an int or a Packed64
-  static Dynamic toFixed64(List<int> b) => int64ToUint64(bytesToPacked64(b));
+  static toFixed64(List<int> b) => int64ToUint64(bytesToPacked64(b));
 
   static int toInt32(List<int> b) => packedToInt32(varintBytesToPacked(b));
 
   // return value may be an int or a Packed64
-  static Dynamic toInt64(List<int> b) =>
+  static toInt64(List<int> b) =>
       int64ToSigned(varintBytesToPacked64(b));
 
   static int toSfixed32(List<int> b) => packedToInt32(bytesToPacked(b));
 
   // return value may be an int or a Packed64
-  static Dynamic toSfixed64(List<int> b) => bytesToPacked64(b);
+  static toSfixed64(List<int> b) => bytesToPacked64(b);
 
   static int toSint32(List<int> b) => packedToSint32(varintBytesToPacked(b));
 
   // return value may be an int or a Packed64
-  static Dynamic toSint64(List<int> b) =>
+  static toSint64(List<int> b) =>
       int64ToSint64(varintBytesToPacked64(b));
 
   static int toUint32(List<int> b) => packedToUint32(varintBytesToPacked(b));
 
   // return value may be an int or a Packed64
-  static Dynamic toUint64(List<int> b) =>
+  static toUint64(List<int> b) =>
       int64ToUint64(varintBytesToPacked64(b));
 
   static double toFloat(List<int> b) => packedToFloat(bytesToPacked(b));
@@ -630,7 +632,7 @@ class PbCodec {
         return sizeOfVarint64(new Packed64.fromInt(value.toInt()));
       }
     } else {
-      throw new IllegalArgumentException("Expected Packed64 or int");
+      throw new ArgumentError("Expected Packed64 or int");
     }
   }
 
@@ -649,7 +651,7 @@ class PbCodec {
     while (i < 10) {
       value >>= _Constants.SEPTET_BIT_COUNT;
       i++;
-      if (value === 0) return i;
+      if (value == 0) return i;
     }
     return i;
   }
@@ -661,7 +663,7 @@ class PbCodec {
     } else if (value is num) {
       return new Packed64.fromInt(value.toInt()).sizeOfVarint();
     } else {
-      throw new IllegalArgumentException("Expected Packed64 or int");
+      throw new ArgumentError("Expected Packed64 or int");
     }
   }
 
@@ -675,12 +677,12 @@ class PbCodec {
   static int sint32ToPacked(int value) => encodeZigZag32(value);
 
   // value and return may be an int or a Packed64
-  static Dynamic sint64ToPacked64(var value) => encodeZigZag64(value);
+  static sint64ToPacked64(var value) => encodeZigZag64(value);
 
   static int uint32ToPacked(int value) => value;
 
   // value and return may be an int or a Packed64
-  static Dynamic uint64ToPacked64(var value) => value;
+  static uint64ToPacked64(var value) => value;
 
   static int packedToInt32(int packed) {
     if (packed >= _Constants.POWER_32_INT) {
@@ -698,10 +700,10 @@ class PbCodec {
   static int packedToUint32(int packed) => packed;
 
   // value and return may be an int or a Packed64
-  static Dynamic int64ToSint64(var packed) => decodeZigZag64(packed);
+  static int64ToSint64(var packed) => decodeZigZag64(packed);
 
   // value and return may be an int or a Packed64
-  static Dynamic int64ToUint64(var packed) {
+  static int64ToUint64(var packed) {
     if (packed is Packed64) {
       return packed;
     } else if (packed < 0) {
@@ -712,7 +714,7 @@ class PbCodec {
   }
 
   // value and return may be an int or a Packed64
-  static Dynamic int64ToSigned(var packed) {
+  static int64ToSigned(var packed) {
     if (packed is Packed64) {
       return packed;
     } else if (packed >= _Constants.POWER_63_INT) {
@@ -732,7 +734,7 @@ class PbCodec {
     return result;
   }
 
-  static Dynamic bytesToPacked64(List<int> b) =>
+  static bytesToPacked64(List<int> b) =>
       new Packed64.fromBytes(b).toIntIfSafe();
 
   static int _unsigned(int x) => x < 0 ? x + _Constants.POWER_32_INT : x;
@@ -741,28 +743,28 @@ class PbCodec {
     try {
       int result = 0;
       int i = 0;
-      bool lastByte = ((b[i] & _Constants.MIN_BITS_8) === 0);
+      bool lastByte = ((b[i] & _Constants.MIN_BITS_8) == 0);
       while (i < 10 && !lastByte) {
         result |= (((b[i] & _Constants.MAX_BITS_7) <<
             (_Constants.SEPTET_BIT_COUNT * i)));
         i++;
-        lastByte = (b[i] & _Constants.MIN_BITS_8) === 0;
+        lastByte = (b[i] & _Constants.MIN_BITS_8) == 0;
       }
       result |= (b[i] & _Constants.MAX_BITS_7) <<
           (_Constants.SEPTET_BIT_COUNT * i);
       return _unsigned(result);
     } on RangeError catch ( e) {
-      throw new IllegalArgumentException("Invalid Encoding");
+      throw new ArgumentError("Invalid Encoding");
     }
   }
 
-  static Dynamic varintBytesToPacked64(List<int> b) =>
+  static varintBytesToPacked64(List<int> b) =>
      new Packed64.fromVarintBytes(b).toUintIfSafe();
 
   static List<int> packed32ToBytes(int value) {
     List<int> b = new List(4);
     for (int i = 0; i < 4; i++) {
-      if (value === 0) {
+      if (value == 0) {
         while (i < 4) {
           b[i] = 0;
           i++;
@@ -782,7 +784,7 @@ class PbCodec {
     } else if (value is num) {
       return new Packed64.fromInt(value.toInt()).toBytes();
     } else {
-      throw new IllegalArgumentException("Expected Packed64 or int");
+      throw new ArgumentError("Expected Packed64 or int");
     }
   }
 
@@ -792,7 +794,7 @@ class PbCodec {
     while (true) {
       i++;
       int nextVal = value ~/ 128;
-      if (nextVal !== 0 && i < 10) {
+      if (nextVal != 0 && i < 10) {
         int v = 128 + (value % 128);
         b.add(v);
       } else {
@@ -811,7 +813,7 @@ class PbCodec {
     } else if (value is num) {
       return new Packed64.fromInt(value.toInt()).toVarintBytes();
     } else {
-      throw new IllegalArgumentException("Expected Packed64 or int");
+      throw new ArgumentError("Expected Packed64 or int");
     }
   }
 
@@ -824,13 +826,13 @@ class PbCodec {
   }
 
   // value and return may be an int or a Packed64
-  static Dynamic encodeZigZag64(var value) {
+  static encodeZigZag64(var value) {
     if (value is Packed64) {
       return value.encodeZigZag().toUintIfSafe();
     } else if (value is num) {
       return new Packed64.fromInt(value.toInt()).encodeZigZag().toUint();
     } else {
-      throw new IllegalArgumentException("Expected Packed64 or int");
+      throw new ArgumentError("Expected Packed64 or int");
     }
   }
 
@@ -848,13 +850,13 @@ class PbCodec {
   }
 
   // value and return may be an int or a Packed64
-  static Dynamic decodeZigZag64(var value) {
+  static decodeZigZag64(var value) {
     if (value is Packed64) {
       return value.decodeZigZag().toIntIfSafe();
     } else if (value is num) {
       return new Packed64.fromInt(value.toInt()).decodeZigZag().toIntIfSafe();
     } else {
-      throw new IllegalArgumentException("Expected Packed64 or int");
+      throw new ArgumentError("Expected Packed64 or int");
     }
   }
 
@@ -865,7 +867,7 @@ class PbCodec {
     } else if (value is num) {
       return new Packed64.fromInt(value.toInt()).toDouble();
     } else {
-      throw new IllegalArgumentException("Expected Packed64 or int");
+      throw new ArgumentError("Expected Packed64 or int");
     }
   }
 
@@ -918,12 +920,12 @@ class PbCodec {
    */
   static int floatToPacked(double d) {
     // Return a canonical NaN since we have no way to detect anything else
-    if (d.isNaN()) {
+    if (d.isNaN) {
       return 0x7fc00000;
     }
 
     bool negative = false;
-    if (d.isNegative()) {
+    if (d.isNegative) {
       negative = true;
       d = -d;
     }
@@ -932,7 +934,7 @@ class PbCodec {
       return negative ? _Constants.POWER_31_INT : 0x0;
     }
     // Numbers above max float map to Infinity
-    if (d.isInfinite() || d > _Constants.MAX_FLOAT) {
+    if (d.isInfinite || d > _Constants.MAX_FLOAT) {
       return negative ? 0xff800000 : 0x7f800000;
     }
 
@@ -968,7 +970,7 @@ class PbCodec {
     return packed32;
   }
 
-  static Dynamic doubleToPacked64(double d) {
+  static doubleToPacked64(double d) {
     Packed64 packed = new Packed64.fromDouble(d);
     if (packed.isSafeAsUint()) {
       return packed.toUint();
@@ -983,7 +985,7 @@ class PbCodec {
 
   // Escape a string to be suitable as a JSON value
   static String escapeString(String x) {
-    List<int> chars = x.charCodes();
+    List<int> chars = x.charCodes;
     List<int> output = new List<int>();
     for (int i = 0; i < chars.length; i++) {
       int c = chars[i];
@@ -1054,7 +1056,7 @@ class Base64Codec {
   }
 
   void _initTables(String alphabet) {
-    _base64Chars = alphabet.charCodes();
+    _base64Chars = alphabet.charCodes;
     _base64InverseChars = new List<int>(128);
     // Use -1 to indicate an illegal character
     for (int i = 0; i < 128; i++) {
@@ -1072,7 +1074,7 @@ class Base64Codec {
     // Look at 7 low bits only
     int result = _base64InverseChars[x & 0x7f];
     if (result == -1) {
-      throw new IllegalArgumentException("Unknown character code: ${x & 0x7f}");
+      throw new ArgumentError("Unknown character code: ${x & 0x7f}");
     }
     return result;
   }
@@ -1146,5 +1148,5 @@ class Base64Codec {
     return new String.fromCharCodes(data);
   }
 
-  String encode(String s, [bool pad = true]) => encodeList(s.charCodes(), pad);
+  String encode(String s, [bool pad = true]) => encodeList(s.charCodes, pad);
 }

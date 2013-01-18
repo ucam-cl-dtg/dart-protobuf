@@ -3,29 +3,31 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-#import("../runtime/Protobuf.dart");
-#import("dart:io");
-#import('dart:core');
-#import('dart:math');
-#source("protoc/descriptor.pb.dart");
-#source("protoc/plugin.pb.dart");
-#source("CodeGenerator.dart");
-#source("DartFile.dart");
-#source("DartHelpers.dart");
-#source("EnumGenerator.dart");
-#source("ExtensionGenerator.dart");
-#source("IndentingWriter.dart");
-#source("MessageGenerator.dart");
-#source("ProtobufField.dart");
-#source("ProtocException.dart");
-#source("ProtoGenDartConfig.dart");
-#source("Writer.dart");
+library protobuf_generator;
+
+import "package:protobuf/runtime/Protobuf.dart";
+import "dart:io";
+import 'dart:core';
+import 'dart:math';
+part "protoc/descriptor.pb.dart";
+part "protoc/plugin.pb.dart";
+part "CodeGenerator.dart";
+part "DartFile.dart";
+part "DartHelpers.dart";
+part "EnumGenerator.dart";
+part "ExtensionGenerator.dart";
+part "IndentingWriter.dart";
+part "MessageGenerator.dart";
+part "ProtobufField.dart";
+part "ProtocException.dart";
+part "ProtoGenDartConfig.dart";
+part "Writer.dart";
 
 final String DISABLE_STREAMS_FLAG = "disable_streams";
 
 void main() {
   var config = parseOptions();
-  if (config === null || !config.valid) {
+  if (config == null || !config.valid) {
     usage();
   } else {
     CodeGenerator cg = new CodeGenerator(config, stdin, stdout, stderr);
@@ -34,7 +36,7 @@ void main() {
 }
 
 void err(String s) {
-  stderr.write("$s\n".charCodes());
+  stderr.write("$s\n".charCodes);
 }
 
 void usage() {
@@ -62,7 +64,7 @@ final String PARAMETER_CL_PARAM = "--parameter";
 
 ProtocGenDartConfig parseOptions([ProtocGenDartConfig config = null]) {
   Options opts = new Options();
-  ProtocGenDartConfig _config = config !== null ? config
+  ProtocGenDartConfig _config = config != null ? config
       : new ProtocGenDartConfig();
   try {
     for (int i = 0; i < opts.arguments.length; i++) {

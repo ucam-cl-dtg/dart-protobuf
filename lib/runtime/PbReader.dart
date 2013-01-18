@@ -2,12 +2,14 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+part of protobuf;
+
 /**
  * The PbReader reads bytes from some source, careful not to read more bytes
  * than requested on destructive reads.
  */
 //interface PbReader {
-class PbReader {
+abstract class PbReader {
   /**
    * Returns whether more data may be available on this PbReader.
    */

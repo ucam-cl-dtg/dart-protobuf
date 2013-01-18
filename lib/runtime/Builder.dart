@@ -2,149 +2,151 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+part of protobuf;
+
 typedef Builder CreateBuilderFunc();
 typedef Object MakeDefaultFunc();
 typedef ProtobufEnum ValueOfFunc(int value);
 
-class Builder implements ChangeListener {
-  static final int _REQUIRED_BIT      = 0x1;
-  static final int _REPEATED_BIT      = 0x2;
-  static final int _PACKED_BIT        = 0x4;
+abstract class Builder implements ChangeListener {
+  static const int _REQUIRED_BIT      = 0x1;
+  static const int _REPEATED_BIT      = 0x2;
+  static const int _PACKED_BIT        = 0x4;
 
-  static final int _BOOL_BIT         = 0x10;
-  static final int _BYTES_BIT        = 0x20;
-  static final int _STRING_BIT       = 0x40;
-  static final int _DOUBLE_BIT       = 0x80;
-  static final int _FLOAT_BIT       = 0x100;
-  static final int _ENUM_BIT        = 0x200;
-  static final int _GROUP_BIT       = 0x400;
-  static final int _INT32_BIT       = 0x800;
-  static final int _INT64_BIT      = 0x1000;
-  static final int _SINT32_BIT     = 0x2000;
-  static final int _SINT64_BIT     = 0x4000;
-  static final int _UINT32_BIT     = 0x8000;
-  static final int _UINT64_BIT    = 0x10000;
-  static final int _FIXED32_BIT   = 0x20000;
-  static final int _FIXED64_BIT   = 0x40000;
-  static final int _SFIXED32_BIT  = 0x80000;
-  static final int _SFIXED64_BIT = 0x100000;
-  static final int _MESSAGE_BIT  = 0x200000;
+  static const int _BOOL_BIT         = 0x10;
+  static const int _BYTES_BIT        = 0x20;
+  static const int _STRING_BIT       = 0x40;
+  static const int _DOUBLE_BIT       = 0x80;
+  static const int _FLOAT_BIT       = 0x100;
+  static const int _ENUM_BIT        = 0x200;
+  static const int _GROUP_BIT       = 0x400;
+  static const int _INT32_BIT       = 0x800;
+  static const int _INT64_BIT      = 0x1000;
+  static const int _SINT32_BIT     = 0x2000;
+  static const int _SINT64_BIT     = 0x4000;
+  static const int _UINT32_BIT     = 0x8000;
+  static const int _UINT64_BIT    = 0x10000;
+  static const int _FIXED32_BIT   = 0x20000;
+  static const int _FIXED64_BIT   = 0x40000;
+  static const int _SFIXED32_BIT  = 0x80000;
+  static const int _SFIXED64_BIT = 0x100000;
+  static const int _MESSAGE_BIT  = 0x200000;
 
-  static final int _OPTIONAL_BOOL = _BOOL_BIT;
-  static final int _OPTIONAL_BYTES = _BYTES_BIT;
-  static final int _OPTIONAL_STRING = _STRING_BIT;
-  static final int _OPTIONAL_FLOAT = _FLOAT_BIT;
-  static final int _OPTIONAL_DOUBLE = _DOUBLE_BIT;
-  static final int _OPTIONAL_ENUM = _ENUM_BIT;
-  static final int _OPTIONAL_GROUP = _GROUP_BIT;
-  static final int _OPTIONAL_INT32 = _INT32_BIT;
-  static final int _OPTIONAL_INT64 = _INT64_BIT;
-  static final int _OPTIONAL_SINT32 = _SINT32_BIT;
-  static final int _OPTIONAL_SINT64 = _SINT64_BIT;
-  static final int _OPTIONAL_UINT32 = _UINT32_BIT;
-  static final int _OPTIONAL_UINT64 = _UINT64_BIT;
-  static final int _OPTIONAL_FIXED32 = _FIXED32_BIT;
-  static final int _OPTIONAL_FIXED64 = _FIXED64_BIT;
-  static final int _OPTIONAL_SFIXED32 = _SFIXED32_BIT;
-  static final int _OPTIONAL_SFIXED64 = _SFIXED64_BIT;
-  static final int _OPTIONAL_MESSAGE = _MESSAGE_BIT;
+  static const int _OPTIONAL_BOOL = _BOOL_BIT;
+  static const int _OPTIONAL_BYTES = _BYTES_BIT;
+  static const int _OPTIONAL_STRING = _STRING_BIT;
+  static const int _OPTIONAL_FLOAT = _FLOAT_BIT;
+  static const int _OPTIONAL_DOUBLE = _DOUBLE_BIT;
+  static const int _OPTIONAL_ENUM = _ENUM_BIT;
+  static const int _OPTIONAL_GROUP = _GROUP_BIT;
+  static const int _OPTIONAL_INT32 = _INT32_BIT;
+  static const int _OPTIONAL_INT64 = _INT64_BIT;
+  static const int _OPTIONAL_SINT32 = _SINT32_BIT;
+  static const int _OPTIONAL_SINT64 = _SINT64_BIT;
+  static const int _OPTIONAL_UINT32 = _UINT32_BIT;
+  static const int _OPTIONAL_UINT64 = _UINT64_BIT;
+  static const int _OPTIONAL_FIXED32 = _FIXED32_BIT;
+  static const int _OPTIONAL_FIXED64 = _FIXED64_BIT;
+  static const int _OPTIONAL_SFIXED32 = _SFIXED32_BIT;
+  static const int _OPTIONAL_SFIXED64 = _SFIXED64_BIT;
+  static const int _OPTIONAL_MESSAGE = _MESSAGE_BIT;
 
-  static final int _REQUIRED_BOOL = _REQUIRED_BIT | _BOOL_BIT;
-  static final int _REQUIRED_BYTES = _REQUIRED_BIT | _BYTES_BIT;
-  static final int _REQUIRED_STRING = _REQUIRED_BIT | _STRING_BIT;
-  static final int _REQUIRED_FLOAT = _REQUIRED_BIT | _FLOAT_BIT;
-  static final int _REQUIRED_DOUBLE = _REQUIRED_BIT | _DOUBLE_BIT;
-  static final int _REQUIRED_ENUM = _REQUIRED_BIT | _ENUM_BIT;
-  static final int _REQUIRED_GROUP = _REQUIRED_BIT | _GROUP_BIT;
-  static final int _REQUIRED_INT32 = _REQUIRED_BIT | _INT32_BIT;
-  static final int _REQUIRED_INT64 = _REQUIRED_BIT | _INT64_BIT;
-  static final int _REQUIRED_SINT32 = _REQUIRED_BIT | _SINT32_BIT;
-  static final int _REQUIRED_SINT64 = _REQUIRED_BIT | _SINT64_BIT;
-  static final int _REQUIRED_UINT32 = _REQUIRED_BIT | _UINT32_BIT;
-  static final int _REQUIRED_UINT64 = _REQUIRED_BIT | _UINT64_BIT;
-  static final int _REQUIRED_FIXED32 = _REQUIRED_BIT | _FIXED32_BIT;
-  static final int _REQUIRED_FIXED64 = _REQUIRED_BIT | _FIXED64_BIT;
-  static final int _REQUIRED_SFIXED32 = _REQUIRED_BIT | _SFIXED32_BIT;
-  static final int _REQUIRED_SFIXED64 = _REQUIRED_BIT | _SFIXED64_BIT;
-  static final int _REQUIRED_MESSAGE = _REQUIRED_BIT | _MESSAGE_BIT;
+  static const int _REQUIRED_BOOL = _REQUIRED_BIT | _BOOL_BIT;
+  static const int _REQUIRED_BYTES = _REQUIRED_BIT | _BYTES_BIT;
+  static const int _REQUIRED_STRING = _REQUIRED_BIT | _STRING_BIT;
+  static const int _REQUIRED_FLOAT = _REQUIRED_BIT | _FLOAT_BIT;
+  static const int _REQUIRED_DOUBLE = _REQUIRED_BIT | _DOUBLE_BIT;
+  static const int _REQUIRED_ENUM = _REQUIRED_BIT | _ENUM_BIT;
+  static const int _REQUIRED_GROUP = _REQUIRED_BIT | _GROUP_BIT;
+  static const int _REQUIRED_INT32 = _REQUIRED_BIT | _INT32_BIT;
+  static const int _REQUIRED_INT64 = _REQUIRED_BIT | _INT64_BIT;
+  static const int _REQUIRED_SINT32 = _REQUIRED_BIT | _SINT32_BIT;
+  static const int _REQUIRED_SINT64 = _REQUIRED_BIT | _SINT64_BIT;
+  static const int _REQUIRED_UINT32 = _REQUIRED_BIT | _UINT32_BIT;
+  static const int _REQUIRED_UINT64 = _REQUIRED_BIT | _UINT64_BIT;
+  static const int _REQUIRED_FIXED32 = _REQUIRED_BIT | _FIXED32_BIT;
+  static const int _REQUIRED_FIXED64 = _REQUIRED_BIT | _FIXED64_BIT;
+  static const int _REQUIRED_SFIXED32 = _REQUIRED_BIT | _SFIXED32_BIT;
+  static const int _REQUIRED_SFIXED64 = _REQUIRED_BIT | _SFIXED64_BIT;
+  static const int _REQUIRED_MESSAGE = _REQUIRED_BIT | _MESSAGE_BIT;
 
-  static final int _REPEATED_BOOL = _REPEATED_BIT | _BOOL_BIT;
-  static final int _REPEATED_BYTES = _REPEATED_BIT | _BYTES_BIT;
-  static final int _REPEATED_STRING = _REPEATED_BIT | _STRING_BIT;
-  static final int _REPEATED_FLOAT = _REPEATED_BIT | _FLOAT_BIT;
-  static final int _REPEATED_DOUBLE = _REPEATED_BIT | _DOUBLE_BIT;
-  static final int _REPEATED_ENUM = _REPEATED_BIT | _ENUM_BIT;
-  static final int _REPEATED_GROUP = _REPEATED_BIT | _GROUP_BIT;
-  static final int _REPEATED_INT32 = _REPEATED_BIT | _INT32_BIT;
-  static final int _REPEATED_INT64 = _REPEATED_BIT | _INT64_BIT;
-  static final int _REPEATED_SINT32 = _REPEATED_BIT | _SINT32_BIT;
-  static final int _REPEATED_SINT64 = _REPEATED_BIT | _SINT64_BIT;
-  static final int _REPEATED_UINT32 = _REPEATED_BIT | _UINT32_BIT;
-  static final int _REPEATED_UINT64 = _REPEATED_BIT | _UINT64_BIT;
-  static final int _REPEATED_FIXED32 = _REPEATED_BIT | _FIXED32_BIT;
-  static final int _REPEATED_FIXED64 = _REPEATED_BIT | _FIXED64_BIT;
-  static final int _REPEATED_SFIXED32 = _REPEATED_BIT | _SFIXED32_BIT;
-  static final int _REPEATED_SFIXED64 = _REPEATED_BIT | _SFIXED64_BIT;
-  static final int _REPEATED_MESSAGE = _REPEATED_BIT | _MESSAGE_BIT;
+  static const int _REPEATED_BOOL = _REPEATED_BIT | _BOOL_BIT;
+  static const int _REPEATED_BYTES = _REPEATED_BIT | _BYTES_BIT;
+  static const int _REPEATED_STRING = _REPEATED_BIT | _STRING_BIT;
+  static const int _REPEATED_FLOAT = _REPEATED_BIT | _FLOAT_BIT;
+  static const int _REPEATED_DOUBLE = _REPEATED_BIT | _DOUBLE_BIT;
+  static const int _REPEATED_ENUM = _REPEATED_BIT | _ENUM_BIT;
+  static const int _REPEATED_GROUP = _REPEATED_BIT | _GROUP_BIT;
+  static const int _REPEATED_INT32 = _REPEATED_BIT | _INT32_BIT;
+  static const int _REPEATED_INT64 = _REPEATED_BIT | _INT64_BIT;
+  static const int _REPEATED_SINT32 = _REPEATED_BIT | _SINT32_BIT;
+  static const int _REPEATED_SINT64 = _REPEATED_BIT | _SINT64_BIT;
+  static const int _REPEATED_UINT32 = _REPEATED_BIT | _UINT32_BIT;
+  static const int _REPEATED_UINT64 = _REPEATED_BIT | _UINT64_BIT;
+  static const int _REPEATED_FIXED32 = _REPEATED_BIT | _FIXED32_BIT;
+  static const int _REPEATED_FIXED64 = _REPEATED_BIT | _FIXED64_BIT;
+  static const int _REPEATED_SFIXED32 = _REPEATED_BIT | _SFIXED32_BIT;
+  static const int _REPEATED_SFIXED64 = _REPEATED_BIT | _SFIXED64_BIT;
+  static const int _REPEATED_MESSAGE = _REPEATED_BIT | _MESSAGE_BIT;
 
-  static final int _PACKED_BOOL = _REPEATED_BIT | _PACKED_BIT | _BOOL_BIT;
-  static final int _PACKED_FLOAT = _REPEATED_BIT | _PACKED_BIT | _FLOAT_BIT;
-  static final int _PACKED_DOUBLE = _REPEATED_BIT | _PACKED_BIT | _DOUBLE_BIT;
-  static final int _PACKED_ENUM = _REPEATED_BIT | _PACKED_BIT | _ENUM_BIT;
-  static final int _PACKED_INT32 = _REPEATED_BIT | _PACKED_BIT | _INT32_BIT;
-  static final int _PACKED_INT64 = _REPEATED_BIT | _PACKED_BIT | _INT64_BIT;
-  static final int _PACKED_SINT32 = _REPEATED_BIT | _PACKED_BIT | _SINT32_BIT;
-  static final int _PACKED_SINT64 = _REPEATED_BIT | _PACKED_BIT | _SINT64_BIT;
-  static final int _PACKED_UINT32 = _REPEATED_BIT | _PACKED_BIT | _UINT32_BIT;
-  static final int _PACKED_UINT64 = _REPEATED_BIT | _PACKED_BIT | _UINT64_BIT;
-  static final int _PACKED_FIXED32 = _REPEATED_BIT | _PACKED_BIT | _FIXED32_BIT;
-  static final int _PACKED_FIXED64 = _REPEATED_BIT | _PACKED_BIT | _FIXED64_BIT;
-  static final int _PACKED_SFIXED32 = _REPEATED_BIT | _PACKED_BIT |
+  static const int _PACKED_BOOL = _REPEATED_BIT | _PACKED_BIT | _BOOL_BIT;
+  static const int _PACKED_FLOAT = _REPEATED_BIT | _PACKED_BIT | _FLOAT_BIT;
+  static const int _PACKED_DOUBLE = _REPEATED_BIT | _PACKED_BIT | _DOUBLE_BIT;
+  static const int _PACKED_ENUM = _REPEATED_BIT | _PACKED_BIT | _ENUM_BIT;
+  static const int _PACKED_INT32 = _REPEATED_BIT | _PACKED_BIT | _INT32_BIT;
+  static const int _PACKED_INT64 = _REPEATED_BIT | _PACKED_BIT | _INT64_BIT;
+  static const int _PACKED_SINT32 = _REPEATED_BIT | _PACKED_BIT | _SINT32_BIT;
+  static const int _PACKED_SINT64 = _REPEATED_BIT | _PACKED_BIT | _SINT64_BIT;
+  static const int _PACKED_UINT32 = _REPEATED_BIT | _PACKED_BIT | _UINT32_BIT;
+  static const int _PACKED_UINT64 = _REPEATED_BIT | _PACKED_BIT | _UINT64_BIT;
+  static const int _PACKED_FIXED32 = _REPEATED_BIT | _PACKED_BIT | _FIXED32_BIT;
+  static const int _PACKED_FIXED64 = _REPEATED_BIT | _PACKED_BIT | _FIXED64_BIT;
+  static const int _PACKED_SFIXED32 = _REPEATED_BIT | _PACKED_BIT |
       _SFIXED32_BIT;
-  static final int _PACKED_SFIXED64 = _REPEATED_BIT | _PACKED_BIT |
+  static const int _PACKED_SFIXED64 = _REPEATED_BIT | _PACKED_BIT |
       _SFIXED64_BIT;
 
   // Short names for use in generated code
 
   // _O_ptional
-  static final int OB = _OPTIONAL_BOOL;
-  static final int OY = _OPTIONAL_BYTES;
-  static final int OS = _OPTIONAL_STRING;
-  static final int OF = _OPTIONAL_FLOAT;
-  static final int OD = _OPTIONAL_DOUBLE;
-  static final int OE = _OPTIONAL_ENUM;
-  static final int OG = _OPTIONAL_GROUP;
-  static final int O3 = _OPTIONAL_INT32;
-  static final int O6 = _OPTIONAL_INT64;
-  static final int OS3 = _OPTIONAL_SINT32;
-  static final int OS6 = _OPTIONAL_SINT64;
-  static final int OU3 = _OPTIONAL_UINT32;
-  static final int OU6 = _OPTIONAL_UINT64;
-  static final int OF3 = _OPTIONAL_FIXED32;
-  static final int OF6 = _OPTIONAL_FIXED64;
-  static final int OSF3 = _OPTIONAL_SFIXED32;
-  static final int OSF6 = _OPTIONAL_SFIXED64;
-  static final int OM = _OPTIONAL_MESSAGE;
+  static const int OB = _OPTIONAL_BOOL;
+  static const int OY = _OPTIONAL_BYTES;
+  static const int OS = _OPTIONAL_STRING;
+  static const int OF = _OPTIONAL_FLOAT;
+  static const int OD = _OPTIONAL_DOUBLE;
+  static const int OE = _OPTIONAL_ENUM;
+  static const int OG = _OPTIONAL_GROUP;
+  static const int O3 = _OPTIONAL_INT32;
+  static const int O6 = _OPTIONAL_INT64;
+  static const int OS3 = _OPTIONAL_SINT32;
+  static const int OS6 = _OPTIONAL_SINT64;
+  static const int OU3 = _OPTIONAL_UINT32;
+  static const int OU6 = _OPTIONAL_UINT64;
+  static const int OF3 = _OPTIONAL_FIXED32;
+  static const int OF6 = _OPTIONAL_FIXED64;
+  static const int OSF3 = _OPTIONAL_SFIXED32;
+  static const int OSF6 = _OPTIONAL_SFIXED64;
+  static const int OM = _OPTIONAL_MESSAGE;
 
   // re_Q_uired
-  static final int QB = _REQUIRED_BOOL;
-  static final int QY = _REQUIRED_BYTES;
-  static final int QS = _REQUIRED_STRING;
-  static final int QF = _REQUIRED_FLOAT;
-  static final int QD = _REQUIRED_DOUBLE;
-  static final int QE = _REQUIRED_ENUM;
-  static final int QG = _REQUIRED_GROUP;
-  static final int Q3 = _REQUIRED_INT32;
-  static final int Q6 = _REQUIRED_INT64;
-  static final int QS3 = _REQUIRED_SINT32;
-  static final int QS6 = _REQUIRED_SINT64;
-  static final int QU3 = _REQUIRED_UINT32;
-  static final int QU6 = _REQUIRED_UINT64;
-  static final int QF3 = _REQUIRED_FIXED32;
-  static final int QF6 = _REQUIRED_FIXED64;
-  static final int QSF3 = _REQUIRED_SFIXED32;
-  static final int QSF6 = _REQUIRED_SFIXED64;
-  static final int QM = _REQUIRED_MESSAGE;
+  static const int QB = _REQUIRED_BOOL;
+  static const int QY = _REQUIRED_BYTES;
+  static const int QS = _REQUIRED_STRING;
+  static const int QF = _REQUIRED_FLOAT;
+  static const int QD = _REQUIRED_DOUBLE;
+  static const int QE = _REQUIRED_ENUM;
+  static const int QG = _REQUIRED_GROUP;
+  static const int Q3 = _REQUIRED_INT32;
+  static const int Q6 = _REQUIRED_INT64;
+  static const int QS3 = _REQUIRED_SINT32;
+  static const int QS6 = _REQUIRED_SINT64;
+  static const int QU3 = _REQUIRED_UINT32;
+  static const int QU6 = _REQUIRED_UINT64;
+  static const int QF3 = _REQUIRED_FIXED32;
+  static const int QF6 = _REQUIRED_FIXED64;
+  static const int QSF3 = _REQUIRED_SFIXED32;
+  static const int QSF6 = _REQUIRED_SFIXED64;
+  static const int QM = _REQUIRED_MESSAGE;
 
   // re_P_eated
   static final int PB = _REPEATED_BOOL;
@@ -190,35 +192,35 @@ class Builder implements ChangeListener {
   static MakeDefaultFunc __DOUBLE_ZERO; // () => 0.0
 
   static MakeDefaultFunc get _STRING_EMPTY {
-    if (__STRING_EMPTY === null) {
+    if (__STRING_EMPTY == null) {
       __STRING_EMPTY = () => '';
     }
     return __STRING_EMPTY;
   }
 
   static MakeDefaultFunc get _BYTES_EMPTY {
-    if (__BYTES_EMPTY === null) {
+    if (__BYTES_EMPTY == null) {
       __BYTES_EMPTY = () => <int>[];
     }
     return __BYTES_EMPTY;
   }
 
   static MakeDefaultFunc get _BOOL_FALSE {
-    if (__BOOL_FALSE === null) {
+    if (__BOOL_FALSE == null) {
       __BOOL_FALSE = () => false;
     }
     return __BOOL_FALSE;
   }
 
   static MakeDefaultFunc get _INT_ZERO {
-    if (__INT_ZERO === null) {
+    if (__INT_ZERO == null) {
       __INT_ZERO = () => 0;
     }
     return __INT_ZERO;
   }
 
   static MakeDefaultFunc get _DOUBLE_ZERO {
-    if (__DOUBLE_ZERO === null) {
+    if (__DOUBLE_ZERO == null) {
       __DOUBLE_ZERO = () => 0.0;
     }
     return __DOUBLE_ZERO;
@@ -278,14 +280,14 @@ class Builder implements ChangeListener {
     return source.asImmutable(_toNonGrowableList);
   }
 
-  Map<int, Dynamic> _fieldValues;
+  Map<int, dynamic> _fieldValues;
   bool _isClean;
   UnknownFieldSet _unknownFields;
   Map<int, Extension> _extensions;
 
   Builder()
     : _unknownFields = UnknownFieldSet.defaultInstance,
-      _fieldValues = new Map<int, Dynamic>() {
+      _fieldValues = new Map<int, dynamic>() {
     initialize_();
   }
 
@@ -332,7 +334,7 @@ class Builder implements ChangeListener {
     return result;
   }
 
-  abstract Message buildPartial();
+  Message buildPartial();
 
   // Shorthand for clearField
   void c_(int tagNumber) {
@@ -341,7 +343,7 @@ class Builder implements ChangeListener {
 
   void clear() {
     _unknownFields = UnknownFieldSet.defaultInstance;
-    _fieldValues = new Map<int, Dynamic>();
+    _fieldValues = new Map<int, dynamic>();
     _isClean = true;
   }
 
@@ -366,7 +368,7 @@ class Builder implements ChangeListener {
       _fieldValues[tagNumber] = new PbList(this);
     } else {
       Object defaultValue = info_.defaultValue(tagNumber);
-      if (defaultValue !== null) {
+      if (defaultValue != null) {
         _fieldValues[tagNumber] = defaultValue;
       }
     }
@@ -376,7 +378,7 @@ class Builder implements ChangeListener {
     if (_extensions == null) {
       return true;
     }
-    return _extensions.getKeys().every(bool _(int tagNumber) {
+    return _extensions.keys.every((int tagNumber) {
       return info_._isFieldInitialized(_fieldValues, tagNumber,
           _extensions[tagNumber].type);
     });
@@ -385,8 +387,8 @@ class Builder implements ChangeListener {
   // Allow the contents of each map or set to be changed, but not its reference
   Map<int, Object> get fieldValues {
     // Force initialization of field values to defaults
-    if (info_ !== null) {
-      for (FieldInfo i in info_.fieldInfo.getValues()) {
+    if (info_ != null) {
+      for (FieldInfo i in info_.fieldInfo.values) {
         if (i.makeDefault != null) fieldValues [i.tagNumber] = i.makeDefault();
       }
     }
@@ -396,13 +398,13 @@ class Builder implements ChangeListener {
   /**
    * Shorthand for [:getField(tagNumber):].
    */
-  Dynamic g_(int tagNumber) => getField(tagNumber);
+  g_(int tagNumber) => getField(tagNumber);
 
   /**
    * Returns the value of the given extension.  For repeated fields that have
    * not been set previously, [:null:] is returned.
    */
-  Dynamic getExtension(Extension extension) {
+  getExtension(Extension extension) {
     _checkExtension(extension);
     return getField(extension.tagNumber);
   }
@@ -415,13 +417,13 @@ class Builder implements ChangeListener {
   int getExtensionCount(Extension extension) {
     _checkExtension(extension);
     List list = _fieldValues[extension.tagNumber];
-    return (list === null || list is! List) ? 0 : list.length;
+    return (list == null || list is! List) ? 0 : list.length;
   }
 
   Object getField(int tagNumber) {
     var value = _fieldValues[tagNumber];
     // Initialize the field
-    if (value === null) {
+    if (value == null) {
       MakeDefaultFunc makeDefaultFunc = info_.makeDefault(tagNumber);
       if (makeDefaultFunc == null) {
         makeDefaultFunc = _extensions[tagNumber].makeDefault;
@@ -460,9 +462,9 @@ class Builder implements ChangeListener {
   }
 
   // Overriden by subclasses
-  abstract BuilderInfo get info_;
+  BuilderInfo get info_;
 
-  abstract void initialize_();
+  void initialize_();
 
   bool isInitialized() {
     if (!info_.hasRequiredFields) {
@@ -739,14 +741,14 @@ class Builder implements ChangeListener {
   }
 
   Builder mergeFromMessage(GeneratedMessage other) {
-    for (int tagNumber in other._fieldValues.getKeys()) {
+    for (int tagNumber in other._fieldValues.keys) {
       var fieldValue = other._fieldValues[tagNumber];
 
       int fieldType = other._builderInfo.fieldType(tagNumber);
       if (fieldType != null) {
         if ((fieldType & _REPEATED_BIT) != 0) {
           List otherList = fieldValue;
-          if (!otherList.isEmpty()) {
+          if (!otherList.isEmpty) {
             List thisList = getField(tagNumber);
             thisList.addAll(otherList);
             onChanged();
@@ -760,7 +762,7 @@ class Builder implements ChangeListener {
         fieldType = extension.type;
         if ((fieldType & _REPEATED_BIT) != 0) {
           List otherList = fieldValue;
-          if (!otherList.isEmpty()) {
+          if (!otherList.isEmpty) {
             List thisList = extension.makeDefault();
             thisList.addAll(otherList);
             _fieldValues[tagNumber] = thisList;
@@ -787,7 +789,7 @@ class Builder implements ChangeListener {
     Function merge;
 
     Function appendAndMerge(int tagNumber) {
-      return Future _(Dynamic value) {
+      return (value) {
         List list = getField(tagNumber);
         list.add(value);
         return merge();
@@ -795,7 +797,7 @@ class Builder implements ChangeListener {
     }
 
     Function assignAndMerge(int tagNumber) {
-      return Future _(Dynamic value) {
+      return (value) {
         _fieldValues[tagNumber] = value;
         return merge();
       };
@@ -828,7 +830,7 @@ class Builder implements ChangeListener {
     }
 
     Future readPackable(int wireType, int tagNumber, var readFunc) =>
-      readPackableIoc(wireType, tagNumber, _(var assigner) =>
+      readPackableIoc(wireType, tagNumber, (var assigner) =>
         readFunc().transform((v) => assigner(v))
       );
 
@@ -1017,7 +1019,7 @@ class Builder implements ChangeListener {
         }
         if (fieldType == -1 || !wireTypeMatch(tagNumber, fieldType, wireType)) {
           return parseUnknownFieldFromStream(input, unknownFieldSetBuilder,
-              extensionRegistry, tag).chain(_(bool unknownTag) {
+              extensionRegistry, tag).chain((bool unknownTag) {
                 if (!unknownTag) {
                   unknownFields = unknownFieldSetBuilder.build();
                   onChanged();
@@ -1088,7 +1090,7 @@ class Builder implements ChangeListener {
   Message partial(GeneratedMessage result) {
     // Set empty repeating fields
     info_.fieldInfo.forEach(
-      void _(int tagNumber, FieldInfo fieldInfo){
+      (int tagNumber, FieldInfo fieldInfo){
         int type = fieldInfo.type;
         if ((type & _REPEATED_BIT) != 0 && !hasField(tagNumber)) {
           result._fieldValues[tagNumber] = PbImmutableList.EMPTY;
@@ -1098,7 +1100,7 @@ class Builder implements ChangeListener {
 
     // Copy extensions
     if (_extensions != null) {
-      for (int tagNumber in _extensions.getKeys()) {
+      for (int tagNumber in _extensions.keys) {
         if (result._extensions == null) {
           result._extensions = new Map<int, Extension>();
         }
@@ -1140,16 +1142,16 @@ class Builder implements ChangeListener {
    */
   void setField(int tagNumber, var value, [int fieldType = null]) {
     if (value == null) {
-      throw new NullPointerException();
+      throw new ArgumentError("null value");
     }
     if (fieldType == null) {
       if (!info_.containsTagNumber(tagNumber)) {
-        throw new IllegalArgumentException("Unknown tag: $tagNumber");
+        throw new ArgumentError("Unknown tag: $tagNumber");
       }
       fieldType = info_.fieldType(tagNumber);
     }
     if ((fieldType & _REPEATED_BIT) != 0) {
-      throw new IllegalArgumentException(_generateMessage(tagNumber, value,
+      throw new ArgumentError(_generateMessage(tagNumber, value,
           "repeating field (use get + .add())"));
     }
 
@@ -1175,7 +1177,7 @@ class Builder implements ChangeListener {
 
   void _checkExtension(Extension extension) {
     if (extension.extendee != info_.messageName) {
-      throw new IllegalArgumentException(
+      throw new ArgumentError(
           "Extension $extension not legal for message ${info_.messageName}");
     }
   }
@@ -1186,7 +1188,7 @@ class Builder implements ChangeListener {
   }
 
   // Extract a value from its JSON representation
-  Dynamic _convertJsonValue(var value, int tagNumber, int fieldType,
+  _convertJsonValue(var value, int tagNumber, int fieldType,
       ExtensionRegistry extensionRegistry) {
     // Mask off 'required', 'repeated' and 'packed' bits to obtain base type
     fieldType &= ~(_REQUIRED_BIT | _REPEATED_BIT | _PACKED_BIT);
@@ -1329,7 +1331,7 @@ class Builder implements ChangeListener {
   Builder _mergeFromJson(Map<String, Object> json,
       ExtensionRegistry extensionRegistry) {
     List<int> tags = new List<int>.from(
-        json.getKeys().map((x) => Math.parseInt(x)));
+        json.keys.map((x) => Math.parseInt(x)));
     tags.sort((a, b) => a.compareTo(b));
 
     for (int tagNumber in tags) {
@@ -1392,67 +1394,67 @@ class Builder implements ChangeListener {
 
   // For int values, force coercion to int since there isn't a reliable
   // check for int-ness that works in both the VM and dart2js
-  Dynamic _validate(int tagNumber, int fieldType, var value) {
+  _validate(int tagNumber, int fieldType, var value) {
     switch (fieldType) {
       case _BOOL_BIT:
         if (value is !bool) {
-          throw new IllegalArgumentException(
+          throw new ArgumentError(
               _generateMessage(tagNumber, value, "not type bool"));
         }
         break;
       case _BYTES_BIT:
         if (value is !List<int>) {
-          throw new IllegalArgumentException(
+          throw new ArgumentError(
               _generateMessage(tagNumber, value, "not List<int>"));
         }
         break;
       case _STRING_BIT:
         if (value is !String) {
-          throw new IllegalArgumentException(
+          throw new ArgumentError(
               _generateMessage(tagNumber, value, "not type String"));
         }
         break;
       case _FLOAT_BIT:
         if (value is !double) {
-          throw new IllegalArgumentException(
+          throw new ArgumentError(
               _generateMessage(tagNumber, value, "not type double"));
         }
         if (value < -_Constants.MAX_FLOAT || value > _Constants.MAX_FLOAT) {
-          throw new IllegalArgumentException(_generateMessage(tagNumber, value,
+          throw new ArgumentError(_generateMessage(tagNumber, value,
               "out of range for float"));
         }
         break;
       case _DOUBLE_BIT:
         if (value is !double) {
-          throw new IllegalArgumentException(
+          throw new ArgumentError(
               _generateMessage(tagNumber, value, "not type double"));
         }
         break;
       case _ENUM_BIT:
         if (value is !ProtobufEnum) {
-          throw new IllegalArgumentException(
+          throw new ArgumentError(
               _generateMessage(tagNumber, value, "not type ProtobufEnum"));
         }
         break;
       case _INT32_BIT:
         if (!_isInt(value)) {
-          throw new IllegalArgumentException(
+          throw new ArgumentError(
               _generateMessage(tagNumber, value, "not type int"));
         }
         if (value < _Constants.MIN_SINT32 || value > _Constants.MAX_SINT32) {
-          throw new IllegalArgumentException(_generateMessage(tagNumber, value,
+          throw new ArgumentError(_generateMessage(tagNumber, value,
               "out of range for int32"));
         }
         value = value.toInt();
         break;
       case _INT64_BIT:
         if (!_isInt(value) && value is !Packed64) {
-          throw new IllegalArgumentException(
+          throw new ArgumentError(
               _generateMessage(tagNumber, value, "not int or Packed64"));
         }
         if (_isInt(value) &&
             (value < _Constants.MIN_SINT64 || value > _Constants.MAX_SINT64)) {
-          throw new IllegalArgumentException(_generateMessage(tagNumber, value,
+          throw new ArgumentError(_generateMessage(tagNumber, value,
               "out of range for int64"));
         }
         if (value is !Packed64) {
@@ -1461,23 +1463,23 @@ class Builder implements ChangeListener {
         break;
       case _SINT32_BIT:
         if (!_isInt(value)) {
-          throw new IllegalArgumentException(
+          throw new ArgumentError(
               _generateMessage(tagNumber, value, "not type int"));
         }
         if (value < _Constants.MIN_SINT32 || value > _Constants.MAX_SINT32) {
-          throw new IllegalArgumentException(_generateMessage(tagNumber, value,
+          throw new ArgumentError(_generateMessage(tagNumber, value,
               "out of range for sint32"));
         }
         value = value.toInt();
         break;
       case _SINT64_BIT:
         if (!_isInt(value) && value is !Packed64) {
-          throw new IllegalArgumentException(
+          throw new ArgumentError(
               _generateMessage(tagNumber, value, "not int or Packed64"));
         }
         if (_isInt(value) &&
             (value < _Constants.MIN_SINT64 || value > _Constants.MAX_SINT64)) {
-          throw new IllegalArgumentException(_generateMessage(tagNumber, value,
+          throw new ArgumentError(_generateMessage(tagNumber, value,
               "out of range for sint64"));
         }
         if (value is !Packed64) {
@@ -1486,22 +1488,22 @@ class Builder implements ChangeListener {
         break;
       case _UINT32_BIT:
         if (!_isInt(value)) {
-          throw new IllegalArgumentException(
+          throw new ArgumentError(
               _generateMessage(tagNumber, value, "not type int"));
         }
         if (value < 0 || value > _Constants.MAX_UINT32) {
-          throw new IllegalArgumentException(_generateMessage(tagNumber, value,
+          throw new ArgumentError(_generateMessage(tagNumber, value,
               "out of range for uint32"));
         }
         value = value.toInt();
         break;
       case _UINT64_BIT:
         if (!_isInt(value) && value is !Packed64) {
-          throw new IllegalArgumentException(
+          throw new ArgumentError(
               _generateMessage(tagNumber, value, "not int or Packed64"));
         }
         if ((_isInt(value)) && (value < 0 || value > _Constants.MAX_UINT64)) {
-          throw new IllegalArgumentException(_generateMessage(tagNumber, value,
+          throw new ArgumentError(_generateMessage(tagNumber, value,
               "out of range for uint64"));
         }
         if (value is !Packed64) {
@@ -1510,21 +1512,21 @@ class Builder implements ChangeListener {
         break;
       case _FIXED32_BIT:
         if (!_isInt(value)) {
-          throw new IllegalArgumentException(
+          throw new ArgumentError(
               _generateMessage(tagNumber, value, "not type int"));
         }
         if (value < 0 || value > _Constants.MAX_UINT32) {
-          throw new IllegalArgumentException(_generateMessage(tagNumber, value,
+          throw new ArgumentError(_generateMessage(tagNumber, value,
               "out of range for fixed32"));
         }
         break;
       case _FIXED64_BIT:
         if (!_isInt(value) && value is !Packed64) {
-          throw new IllegalArgumentException(
+          throw new ArgumentError(
               _generateMessage(tagNumber, value, "not int or Packed64"));
         }
         if ((_isInt(value)) && (value < 0 || value > _Constants.MAX_UINT64)) {
-          throw new IllegalArgumentException(_generateMessage(tagNumber, value,
+          throw new ArgumentError(_generateMessage(tagNumber, value,
               "out of range for fixed64"));
         }
         if (value is !Packed64) {
@@ -1533,22 +1535,22 @@ class Builder implements ChangeListener {
         break;
       case _SFIXED32_BIT:
         if (!_isInt(value)) {
-          throw new IllegalArgumentException(
+          throw new ArgumentError(
               _generateMessage(tagNumber, value, "not type int"));
         }
         if (value < _Constants.MIN_SINT32 || value > _Constants.MAX_SINT32) {
-          throw new IllegalArgumentException(_generateMessage(tagNumber, value,
+          throw new ArgumentError(_generateMessage(tagNumber, value,
               "out of range for sfixed32"));
         }
         break;
       case _SFIXED64_BIT:
         if (!_isInt(value) && value is !Packed64) {
-          throw new IllegalArgumentException(
+          throw new ArgumentError(
               _generateMessage(tagNumber, value, "not int or Packed64"));
         }
         if ((_isInt(value)) && (value < _Constants.MIN_SINT64 ||
             value > _Constants.MAX_SINT64)) {
-          throw new IllegalArgumentException(_generateMessage(tagNumber, value,
+          throw new ArgumentError(_generateMessage(tagNumber, value,
               "out of range for sfixed64"));
         }
         if (value is !Packed64) {
@@ -1558,12 +1560,12 @@ class Builder implements ChangeListener {
       case _GROUP_BIT:
       case _MESSAGE_BIT:
         if (value is !GeneratedMessage) {
-          throw new IllegalArgumentException(
+          throw new ArgumentError(
               _generateMessage(tagNumber, value, "not a GeneratedMessage"));
         }
         break;
       default:
-        throw new IllegalArgumentException(
+        throw new ArgumentError(
             _generateMessage(tagNumber, value, "field has unknown type "
             "$fieldType"));
     }

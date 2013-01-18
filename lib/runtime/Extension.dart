@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+part of protobuf;
+
 /**
  * An object representing an extension field.
  */
@@ -15,7 +17,7 @@ class Extension extends FieldInfo {
      super(name, tagNumber, fieldType, makeDefault, subBuilder, valueOf);
 
 
-  int get hashCode => extendee.hashCode() * 31 + tagNumber;
+  int get hashCode => extendee.hashCode * 31 + tagNumber;
 
   bool operator ==(Extension o) {
     if (o is! Extension) {

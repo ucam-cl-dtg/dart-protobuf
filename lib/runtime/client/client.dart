@@ -2,10 +2,11 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-part of protobuf;
+library protobuf_client;
+import 'dart:utf';
+import 'dart:json';
 
-//interface ChangeListener {
-//interface 
-abstract class ChangeListener {
-  void onChanged();
-}
+// FIXME: import dart:io when available in client
+import 'package:protobuf/runtime/Protobuf.dart';
+
+part 'mock_io.dart';

@@ -2,11 +2,13 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+part of protobuf_generator;
+
 //interface ProtobufContainer {
-class ProtobufContainer {
+abstract class ProtobufContainer {
   String get fqname;
   String get classname;
-  GoogleProtobuf_FileOptions_OptimizeMode get optimizeFor {} //will it work
+  GoogleProtobuf_FileOptions_OptimizeMode get optimizeFor; //will it work
 }
 
 class CodeGenerator implements ProtobufContainer {
@@ -16,7 +18,7 @@ class CodeGenerator implements ProtobufContainer {
   void generate() {
     PbInputStreamReader reader = new PbInputStreamReader(_streamIn);
     Future<List<int>> futureBytes = reader.readBytes();
-    futureBytes.then(_(List<int> bytes) {
+    futureBytes.then((List<int> bytes) {
       _streamIn.close();
       GoogleProtobufCompiler_CodeGeneratorRequest request =
           GoogleProtobufCompiler_CodeGeneratorRequest.parseFromBuffer(bytes);

@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+part of protobuf;
+
 class UnknownFieldSet implements Message {
 
   static UnknownFieldSet _defaultInstance;
@@ -39,7 +41,7 @@ class UnknownFieldSet implements Message {
     if (other is! UnknownFieldSet) return false;
     UnknownFieldSet o = other;
     if (_fields.length != o._fields.length) return false;
-    for (int key in _fields.getKeys()) {
+    for (int key in _fields.keys) {
       if (_fields[key] != o._fields[key]) {
         return false;
       }
@@ -51,9 +53,9 @@ class UnknownFieldSet implements Message {
   
   int get hashCode {
     int hash = 0;
-    _fields.forEach(_(key, value) {
+    _fields.forEach((key, value) {
       hash = (19 * hash) + key;
-      hash = (27 * hash) + value.hashCode();
+      hash = (27 * hash) + value.hashCode;
     });
     return hash;
   }
@@ -68,7 +70,7 @@ class UnknownFieldSet implements Message {
 
     // Sort output by tag number
 
-    List<int> tags = _fields.getKeys();
+    List<int> tags = _fields.keys;
     tags.sort((a, b) => a.compareTo(b));
 
     for (int tag in tags) {
@@ -121,7 +123,7 @@ class UnknownFieldSet_Builder {
       _lastField = null;
       _lastFieldNumber = 0;
     }
-    if (_fields == null || _fields.isEmpty()) {
+    if (_fields == null || _fields.isEmpty) {
       _fields = new Map<int, UnknownFieldSet_Field>();
     }
     _fields[number] = field;
@@ -190,32 +192,32 @@ class UnknownFieldSet_Builder {
     int number = WireFormat.getTagFieldNumber(tag);
     switch (WireFormat.getTagWireType(tag)) {
     case WireFormat.WIRETYPE_VARINT:
-      return input.readInt64().transform(_(Dynamic varint) {
+      return input.readInt64().transform((varint) {
         mergeVarintField(number, varint);
         return true;
       });
     case WireFormat.WIRETYPE_FIXED64:
-      return input.readFixed64().transform(_(int fixed64) {
+      return input.readFixed64().transform((int fixed64) {
         Packed64 packed = new Packed64.fromInt(fixed64);
         mergeFixed64Field(number, packed);
         return true;
       });
     case WireFormat.WIRETYPE_LENGTH_DELIMITED:
-      input.readBytes().transform((List<int> bytes) {
+      return input.readBytes().transform((List<int> bytes) {
         mergeLengthDelimitedField(number, bytes);
         return true;
       });
     case WireFormat.WIRETYPE_START_GROUP:
       UnknownFieldSet_Builder subBuilder = new UnknownFieldSet_Builder();
       return input.readUnknownFieldSetGroup(number, subBuilder,
-          ExtensionRegistry.EMPTY_REGISTRY).transform(bool f(_) {
+          ExtensionRegistry.EMPTY_REGISTRY).transform( (_) {
             mergeGroupField(number, subBuilder.build());
             return true;
           });
     case WireFormat.WIRETYPE_END_GROUP:
       return new Future<bool>.immediate(false);
     case WireFormat.WIRETYPE_FIXED32:
-      return input.readFixed32().transform(_(int fixed32) {
+      return input.readFixed32().transform((int fixed32) {
         mergeFixed32Field(number, fixed32);
         return true;
       });
@@ -252,8 +254,8 @@ class UnknownFieldSet_Builder {
   }
 
   UnknownFieldSet_Builder mergeFromUnknownFieldSet(UnknownFieldSet other) {
-    if (other !== UnknownFieldSet.defaultInstance) {
-      for (int key in other._fields.getKeys()) {
+    if (other != UnknownFieldSet.defaultInstance) {
+      for (int key in other._fields.keys) {
         mergeField(key, other._fields[key]);
       }
     }
@@ -291,7 +293,7 @@ class UnknownFieldSet_Builder {
     return this;
   }
 
-  UnknownFieldSet_Builder mergeVarintField(int number, Dynamic value) {
+  UnknownFieldSet_Builder mergeVarintField(int number, var value) {
     _checkFieldNumber(number);
     _getFieldBuilder(number).addVarint(value);
     return this;
@@ -328,7 +330,7 @@ class UnknownFieldSet_Builder {
 class UnknownFieldSet_Field {
 
   List<List<int>> _lengthDelimited;
-  List<Dynamic> _varint;
+  List _varint;
   List<int> _fixed32;
   List<Packed64> _fixed64;
   List<UnknownFieldSet> _group;
@@ -359,25 +361,25 @@ class UnknownFieldSet_Field {
 
   int get hashCode {
     int hash = 7;
-    _lengthDelimited.forEach(_(List<int> e) {
+    _lengthDelimited.forEach((List<int> e) {
       hash += 5;
       e.forEach((int f) => hash = (hash * 11) + f);
     });
-    _varint.forEach((Dynamic e) => hash = (hash * 13) + e.hashCode());
+    _varint.forEach((e) => hash = (hash * 13) + e.hashCode);
     _fixed32.forEach((int e) => hash = (hash * 17) + e);
-    _fixed64.forEach((Packed64 e) => hash = (hash * 23) + e.hashCode());
-    _group.forEach((UnknownFieldSet e) => hash = (hash * 29) + e.hashCode());
+    _fixed64.forEach((Packed64 e) => hash = (hash * 23) + e.hashCode);
+    _group.forEach((UnknownFieldSet e) => hash = (hash * 29) + e.hashCode);
     return hash;
   }
   
 
   List<List<int>> get lengthDelimitedList => _lengthDelimited;
-  List<Dynamic> get varintList => _varint;
+  List get varintList => _varint;
   List<int> get fixed32List => _fixed32;
   List<Packed64> get fixed64List => _fixed64;
   List<UnknownFieldSet> get groupList => _group;
-  List<Dynamic> get values {
-    List<Dynamic> v = <Dynamic>[];
+  List get values {
+    List v = [];
     if (_lengthDelimited != null) v.addAll(_lengthDelimited);
     if (_varint != null) v.addAll(_varint);
     if (_fixed32 != null) v.addAll(_fixed32);
@@ -388,7 +390,7 @@ class UnknownFieldSet_Field {
 
   int getSerializedSize(int fieldNumber) {
     int result = 0;
-    for (Dynamic value in _varint) {
+    for (var value in _varint) {
       result += CodedBufferWriter.computeUint64Size(fieldNumber, value);
     }
     for (int value in _fixed32) {
@@ -407,7 +409,7 @@ class UnknownFieldSet_Field {
   }
 
   void writeTo(int fieldNumber, CodedBufferWriter output) {
-    for (Dynamic value in _varint) {
+    for (var value in _varint) {
       output.writeUint64(fieldNumber, value);
     }
     for (int value in _fixed32) {
@@ -475,9 +477,9 @@ class UnknownFieldSet_Field_Builder {
     return this;
   }
 
-  UnknownFieldSet_Field_Builder addVarint(Dynamic value) {
+  UnknownFieldSet_Field_Builder addVarint(value) {
     initialize_();
-    if (_result._varint == null) _result._varint = new List<Dynamic>();
+    if (_result._varint == null) _result._varint = new List();
     _result._varint.add(value);
     return this;
   }
@@ -487,7 +489,7 @@ class UnknownFieldSet_Field_Builder {
   UnknownFieldSet_Field buildField() {
     UnknownFieldSet_Field returnMe = new UnknownFieldSet_Field();
     if (_result._varint == null) {
-      returnMe._varint = new List<Dynamic>(0);
+      returnMe._varint = new List(0);
     } else {
       returnMe._varint = new PbImmutableList.from(_result._varint);
     }
@@ -524,31 +526,31 @@ class UnknownFieldSet_Field_Builder {
   int get length => _result.values.length;
 
   UnknownFieldSet_Field_Builder mergeFromField(UnknownFieldSet_Field other) {
-    if (!other._varint.isEmpty()) {
+    if (!other._varint.isEmpty) {
       if (_result._varint == null) {
-        _result._varint = new List<Dynamic>();
+        _result._varint = new List();
       }
       _result._varint.addAll(other._varint);
     }
-    if (!other._fixed32.isEmpty()) {
+    if (!other._fixed32.isEmpty) {
       if (_result._fixed32 == null) {
         _result._fixed32 = new List<int>();
       }
       _result._fixed32.addAll(other._fixed32);
     }
-    if (!other._fixed64.isEmpty()) {
+    if (!other._fixed64.isEmpty) {
       if (_result._fixed64 == null) {
         _result._fixed64 = new List<Packed64>();
       }
       _result._fixed64.addAll(other._fixed64);
     }
-    if (!other._lengthDelimited.isEmpty()) {
+    if (!other._lengthDelimited.isEmpty) {
       if (_result._lengthDelimited == null) {
         _result._lengthDelimited = new List<List<int>>();
       }
       _result._lengthDelimited.addAll(other._lengthDelimited);
     }
-    if (!other._group.isEmpty()) {
+    if (!other._group.isEmpty) {
       if (_result._group == null) {
         _result._group = new List<UnknownFieldSet>();
       }

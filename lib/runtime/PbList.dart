@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+part of protobuf;
+
 typedef B PartialFunction<A,B>(A a);
 
 class PbList<E> implements List<E> {
@@ -52,7 +54,7 @@ class PbList<E> implements List<E> {
    * an [UnsupportedOperationException] if the list is not extendable.
    */
   void set length(int newLength) {
-    throw const UnsupportedOperationException("length");
+    throw new UnsupportedError("length");
   }
 
   /**
@@ -101,7 +103,10 @@ class PbList<E> implements List<E> {
    *   0 if a = b, and
    *   an integer strictly greater than 0 if a > b.
    */
-  void sort(int compare(E a, E b)) {
+  void sort([int compare(E a, E b)]) {
+    if (compare == null) {
+      throw new UnsupportedError("must supply compare function");
+    }
     _ensureMutable();
     _wrappedList.sort(compare);
     _modified();
@@ -150,13 +155,13 @@ class PbList<E> implements List<E> {
    * Returns the last element of the list, or throws an out of bounds
    * exception if the list is empty.
    */
-  E last() => _wrappedList.last();
+  E get last => _wrappedList.last;
 
   /**
    * Returns a sub list copy of this list, from [start] to
    * [:start + length:].
    * Returns an empty list if [length] is 0.
-   * Throws an [IllegalArgumentException] if [length] is negative.
+   * Throws an [ArgumentError] if [length] is negative.
    * Throws an [IndexOutOfRangeException] if [start] or
    * [:start + length:] are out of range.
    */
@@ -169,7 +174,7 @@ class PbList<E> implements List<E> {
    * Throws an [UnsupportedOperationException] if the list is
    * not extendable.
    * If [length] is 0, this method does not do anything.
-   * Throws an [IllegalArgumentException] if [length] is negative.
+   * Throws an [ArgumentError] if [length] is negative.
    * Throws an [IndexOutOfRangeException] if [start] or
    * [:start + length:] are out of range for [:this:], or if
    * [startFrom] is out of range for [from].
@@ -187,7 +192,7 @@ class PbList<E> implements List<E> {
    * Throws an [UnsupportedOperationException] if the list is
    * not extendable.
    * If [length] is 0, this method does not do anything.
-   * Throws an [IllegalArgumentException] if [length] is negative.
+   * Throws an [ArgumentError] if [length] is negative.
    * Throws an [IndexOutOfRangeException] if [start] or
    * [:start + length:] are out of range.
    */
@@ -207,12 +212,12 @@ class PbList<E> implements List<E> {
    * If [length] is 0, this method does not do anything.
    * If [start] is the length of the array, this method inserts the
    * range at the end of the array.
-   * Throws an [IllegalArgumentException] if [length] is negative.
+   * Throws an [ArgumentError] if [length] is negative.
    * Throws an [IndexOutOfRangeException] if [start] or
    * [:start + length:] are out of range.
    */
   void insertRange(int start, int length, [E initialValue]) {
-    throw const UnsupportedOperationException("insertRange");
+    throw new UnsupportedError("insertRange");
   }
 
   /**
@@ -244,7 +249,7 @@ class PbList<E> implements List<E> {
   /**
    * Returns true if there is no element in this collection.
    */
-  bool isEmpty() => _wrappedList.isEmpty;
+  bool get isEmpty => _wrappedList.isEmpty;
 
   /**
    * Returns the number of elements in this collection.
@@ -274,8 +279,8 @@ class PbList<E> implements List<E> {
   }
 
   void _validate(E val) {
-    if (val === null) {
-      throw new NullPointerException();
+    if (val == null) {
+      throw new ArgumentError();
     }
     // Note: the generic parameter [E] is not preserved by the dart2js compiler.
     // For this reason, in that context both `val is E` and `val is! E` return
@@ -283,7 +288,7 @@ class PbList<E> implements List<E> {
     // at least on the dartvm.
     // TODO(rice,sigmund): remove this trick.
     if (!(val is E)) {
-      throw new IllegalArgumentException(
+      throw new ArgumentError(
           "Value ($val) is not of the correct type");
     }
   }
@@ -298,17 +303,27 @@ class PbList<E> implements List<E> {
 
   void _modified() {
     // clear local cache of _immutableList
-    if (_listener !== null) _listener.onChanged();
+    if (_listener != null) _listener.onChanged();
   }
 
   Collection map(f(E element)) {
-    throw "not implemented";
+    throw new UnimplementedError();
   }
 
   ChangeListener _listener;
   List<E> _mutableList;
   List<E> _immutableList;
   List<E> _wrappedList;
+  
+  bool contains(E element) => _wrappedList.contains(element);
+  dynamic reduce(dynamic initialValue, combine(var previousValue, E element)) => _wrappedList.reduce(initialValue, combine);
+  E get first => _wrappedList.first;
+  E removeAt(int index) {
+    _ensureMutable();
+    E value = _wrappedList.removeAt(index);
+    _modified();
+    return value;
+  }
 }
 
 /**
@@ -322,7 +337,7 @@ class PbSint32List extends PbList<int> {
   void _validate(int val) {
     super._validate(val);
     if (val < _Constants.MIN_SINT32 || val > _Constants.MAX_SINT32) {
-      throw new IllegalArgumentException("Illegal to add value (${val}): out "
+      throw new ArgumentError("Illegal to add value (${val}): out "
           "of range for int32");
     }
   }
@@ -339,7 +354,7 @@ class PbUint32List extends PbList<int> {
   void _validate(int val) {
     super._validate(val);
     if (val < 0 || val > _Constants.MAX_UINT32) {
-      throw new IllegalArgumentException("Illegal to add value (${val}):"
+      throw new ArgumentError("Illegal to add value (${val}):"
           " out of range for uint32");
     }
   }
@@ -359,11 +374,11 @@ class PbSint64List extends PbList {
       return;
     } else if ((val is num) && (val.floor() == val)) {
       if (val < _Constants.MIN_SINT64 || val > _Constants.MAX_SINT64) {
-         throw new IllegalArgumentException("Illegal to add value (${val}):"
+         throw new ArgumentError("Illegal to add value (${val}):"
              " out of range for sint64");
       }
     } else {
-      throw new IllegalArgumentException("Value is not int or Packed64");
+      throw new ArgumentError("Value is not int or Packed64");
     }
   }
 }
@@ -382,11 +397,11 @@ class PbUint64List extends PbList {
       return;
     } else if ((val is num) && (val.floor() == val)) {
       if (val < 0 || val > _Constants.MAX_UINT64) {
-        throw new IllegalArgumentException("Illegal to add value (${val}):"
+        throw new ArgumentError("Illegal to add value (${val}):"
             " out of range for uint64");
       }
     } else {
-      throw new IllegalArgumentException("Value is not int or Packed64");
+      throw new ArgumentError("Value is not int or Packed64");
     }
   }
 }
@@ -402,7 +417,7 @@ class PbFloatList extends PbList<double> {
   void _validate(double val) {
     super._validate(val);
     if (val < -_Constants.MAX_FLOAT || val > _Constants.MAX_FLOAT) {
-      throw new IllegalArgumentException("Illegal to add value (${val}):"
+      throw new ArgumentError("Illegal to add value (${val}):"
           " out of range for float");
     }
   }

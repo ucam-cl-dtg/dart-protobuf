@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+part of protobuf;
+
 class PbInputStreamReader implements PbReader {
 
   PbInputStreamReader(InputStream this._inputStream)
@@ -68,7 +70,7 @@ class PbInputStreamReader implements PbReader {
   void _handleDataReadToEnd() {
     if (_inputStream.available() > 0) {
       List<int> data = _inputStream.read();
-      if (null !== data) {
+      if (null != data) {
         _buffer.add(data);
       }
     }

@@ -1,6 +1,8 @@
 name:  protobuf
 description:  Protobuf dart library
 
-#dependencies:
+dependencies:
+  bignum:
+    git: git://github.com/ucam-cl-dtg/dart-bignum.git
 #  js: any
 #  unittest: any

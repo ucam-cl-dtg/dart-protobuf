@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+part of protobuf_generator;
+
 class FileGenerator implements ProtobufContainer {
   GoogleProtobuf_FileDescriptorProto _fileDescriptor;
   ProtobufContainer _parent;
@@ -19,7 +21,7 @@ class FileGenerator implements ProtobufContainer {
     messageGenerators = new List<MessageGenerator>();
     extensionGenerators = new List<ExtensionGenerator>();
 
-    _classname = _fileDescriptor.package === null ? "" :
+    _classname = _fileDescriptor.package == null ? "" :
         "${dotsToCamelCase(_fileDescriptor.package, true)}";
 
     _optimizeFor = _parent.optimizeFor;
@@ -45,7 +47,7 @@ class FileGenerator implements ProtobufContainer {
   }
 
   String get classname => _classname;
-  String get fqname => _fileDescriptor.package === null
+  String get fqname => _fileDescriptor.package == null
       ? "" : ".${_fileDescriptor.package}";
   GoogleProtobuf_FileOptions_OptimizeMode get optimizeFor => _optimizeFor;
 

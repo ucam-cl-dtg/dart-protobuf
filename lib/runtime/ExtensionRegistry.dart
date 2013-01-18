@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+part of protobuf;
+
 /**
  * A collection of [Extension] objects, organized by the message type they
  * extend.
@@ -49,7 +51,7 @@ class ExtensionRegistry {
 
 class _EmptyExtensionRegistry extends ExtensionRegistry {
   void add(Extension extension) {
-    throw new UnsupportedOperationException("Immutable ExtensionRegistry");
+    throw new UnsupportedError("Immutable ExtensionRegistry");
   }
 
   Extension getExtension(String messageName, int tagNumber) => null;

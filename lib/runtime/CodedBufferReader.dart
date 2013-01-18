@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+part of protobuf;
+
 class CodedBufferReader extends CodedReader {
   PbByteBuffer _input;
 
@@ -52,15 +54,15 @@ class CodedBufferReader extends CodedReader {
 
   int readEnum() => readInt32();
   int readInt32() => PbCodec.toInt32(readRawVarint());
-  Dynamic readInt64() => PbCodec.toInt64(readRawVarint());
+  readInt64() => PbCodec.toInt64(readRawVarint());
   int readUint32() => PbCodec.toUint32(readRawVarint());
   int readUint64() => PbCodec.toUint64(readRawVarint());
   int readSint32() => PbCodec.toSint32(readRawVarint());
-  Dynamic readSint64() => PbCodec.toSint64(readRawVarint());
+  readSint64() => PbCodec.toSint64(readRawVarint());
   int readFixed32() => PbCodec.toFixed32(readRaw32());
-  Dynamic readFixed64() => PbCodec.toFixed64(readRaw64());
+  readFixed64() => PbCodec.toFixed64(readRaw64());
   int readSfixed32() => PbCodec.toSfixed32(readRaw32());
-  Dynamic readSfixed64() => PbCodec.toSfixed64(readRaw64());
+  readSfixed64() => PbCodec.toSfixed64(readRaw64());
   bool readBool() => PbCodec.toBool(readRawVarint());
   List<int> readBytes() => readRawLengthDelimited();
   String readString() => decodeUtf8(readRawLengthDelimited());

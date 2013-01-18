@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+part of protobuf_generator;
+
 class IndentingWriter implements Writer {
   IndentingWriter(String this._indentSequence, Writer this._writer)
     : _currentIndent = "";
@@ -34,7 +36,7 @@ class IndentingWriter implements Writer {
   }
 
   void print(String stringToPrint) {
-    if (_currentLine === null) {
+    if (_currentLine == null) {
       _currentLine = new StringBuffer();
     }
     _currentLine.add(stringToPrint);
@@ -52,11 +54,12 @@ class IndentingWriter implements Writer {
     // TODO - not clear how this plays cross-platform.
     // more sophisticated patterns don't seem to match.
     String string;
-    if (_currentLine !== null) {
-      string = _currentLine.add(out === null ? "" : out).toString();
+    if (_currentLine != null) {
+      _currentLine.add(out == null ? "" : out);
+      string = _currentLine.toString();
       _currentLine = null;
     } else {
-      string = out === null ? "" : out;
+      string = out == null ? "" : out;
     }
 
     List<String> lines = string.split("\n");
@@ -77,7 +80,7 @@ class IndentingWriter implements Writer {
    * Push out the current line (see print()) if non-empty.
    */
   void flushLine() {
-    if (_currentLine !== null && _currentLine.length > 0) println("");
+    if (_currentLine != null && _currentLine.length > 0) println("");
   }
 
   StringBuffer _currentLine;

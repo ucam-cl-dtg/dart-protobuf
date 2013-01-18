@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+part of protobuf_generator;
+
 class ExtensionGenerator implements ProtobufContainer {
 
   // Whitespace
@@ -84,10 +86,10 @@ class ExtensionGenerator implements ProtobufContainer {
     }
 
     if (field.enum) {
-      if (initializer.isEmpty()) {
+      if (initializer.isEmpty) {
         initializer = ",${sp}null";
       }
-      if (builder.isEmpty()) {
+      if (builder.isEmpty) {
         builder = ",${sp}null";
       }
       valueOf = ",${sp}(var v)${sp}=>${sp}${field.baseType}.valueOf(v)";

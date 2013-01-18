@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+part of protobuf;
+
 /**
  * Per-message type setup.
  */
@@ -90,10 +92,10 @@ class BuilderInfo {
       createFunc = () => new PbUint64List(_builder);
       break;
     case Builder._MESSAGE_BIT:
-      throw new IllegalArgumentException(
+      throw new ArgumentError(
           "use BuilderInfo.m() for repeated messages");
     default:
-      throw new IllegalArgumentException("unknown type ${fieldType_}");
+      throw new ArgumentError("unknown type ${fieldType_}");
     }
 
     add(tagNumber_, name, fieldType_, createFunc, null, null);
@@ -103,7 +105,7 @@ class BuilderInfo {
 
   Object defaultValue(int tagNumber_) {
     MakeDefaultFunc func = makeDefault(tagNumber_);
-    return func === null ? null : func();
+    return func == null ? null : func();
   }
 
   // Returns the field name for a given tag number, for debugging purposes.
@@ -123,7 +125,7 @@ class BuilderInfo {
   }
 
   bool isInitialized(Map<int, Object> fieldValues) {
-    return fieldInfo.getKeys().every(bool _(int tagNumber_) {
+    return fieldInfo.keys.every((int tagNumber_) {
       return _isFieldInitialized(fieldValues, tagNumber_);
     });
   }
@@ -153,7 +155,7 @@ class BuilderInfo {
       if ((fieldType_ & Builder._REQUIRED_BIT) != 0) {
         Message message = fieldValues[tagNumber_];
         // required message/group must be present and initialized
-        if (message === null || !message.isInitialized()) {
+        if (message == null || !message.isInitialized()) {
           return false;
         }
       } else if ((fieldType_ & Builder._REPEATED_BIT) != 0) {
@@ -162,7 +164,7 @@ class BuilderInfo {
           List list = fieldValues[tagNumber_];
           // For message types that (recursively) contain no required fields,
           // short-circuit the loop
-          if (!list.isEmpty() && list[0].hasRequiredFields()) {
+          if (!list.isEmpty && list[0].hasRequiredFields()) {
             for (Message message in list) {
               if (!message.isInitialized()) {
                 return false;
@@ -173,14 +175,14 @@ class BuilderInfo {
       } else {
         Message message = fieldValues[tagNumber_];
         // optional message/group must be initialized if it is present
-        if (message !== null && !message.isInitialized()) {
+        if (message != null && !message.isInitialized()) {
           return false;
         }
       }
 
     } else if ((fieldType_ & Builder._REQUIRED_BIT) != 0) {
       // required 'primitive' must be present
-      if (fieldValues[tagNumber_] === null) {
+      if (fieldValues[tagNumber_] == null) {
         return false;
       }
     }
@@ -189,14 +191,14 @@ class BuilderInfo {
 
   List<String> _findInvalidFields(Map<int, Object> fieldValues,
       List<String> invalidFields, [String prefix = ""]) {
-    fieldInfo.forEach(_(int tagNumber_, FieldInfo field) {
+    fieldInfo.forEach((int tagNumber_, FieldInfo field) {
       int fieldType_ = field.type;
       if ((fieldType_ &
           (Builder._MESSAGE_BIT | Builder._GROUP_BIT)) != 0) {
         if ((fieldType_ & Builder._REQUIRED_BIT) != 0) {
           Message message = fieldValues[tagNumber_];
           // required message/group must be present
-          if (message === null) {
+          if (message == null) {
             invalidFields.add("${prefix}${field.name}");
           } else {
             message._findInvalidFields(invalidFields,
@@ -208,7 +210,7 @@ class BuilderInfo {
             List list = fieldValues[tagNumber_];
             // For messages that (recursively) contain no required fields,
             // short-circuit the loop
-            if (!list.isEmpty() && list[0].hasRequiredFields()) {
+            if (!list.isEmpty && list[0].hasRequiredFields()) {
               int position = 0;
               for (Message message in list) {
                 if (message.hasRequiredFields()) {
@@ -222,14 +224,14 @@ class BuilderInfo {
         } else {
           Message message = fieldValues[tagNumber_];
           // required message/group must be present
-          if (message !== null) {
+          if (message != null) {
             message._findInvalidFields(invalidFields, "${prefix}${field.name}.");
           }
         }
 
       } else if((fieldType_ & Builder._REQUIRED_BIT) != 0) {
         // required 'primitive' must be present
-        if (fieldValues[tagNumber_] === null) {
+        if (fieldValues[tagNumber_] == null) {
           invalidFields.add("${prefix}${field.name}");
         }
       }

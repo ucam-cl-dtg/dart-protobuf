@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+part of protobuf;
+
 /**
  * A dynamic byte buffer that acts as a buffering pipe/queue for data.
  */
@@ -15,7 +17,7 @@ class PbByteBuffer {
    * Build with an optional queue of lists (the initial buffer).
    */
   PbByteBuffer.fromQueueOfLists([Queue<List<int>> this._buffer]) {
-    if (null !== _buffer) {
+    if (null != _buffer) {
       for (List<int> l in _buffer) {
         _length += l.length;
       }

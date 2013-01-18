@@ -2,7 +2,9 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-class CodedReader {
+part of protobuf;
+
+abstract class CodedReader {
   //static final int DEFAULT_RECURSION_LIMIT = 64;
   //static final int DEFAULT_SIZE_LIMIT = 64 << 20;
 
@@ -31,7 +33,7 @@ class CodedReader {
       _currentLimit >= 0 ? _currentLimit - (_totalBytesRetired + _bufferPos) :
       -1;
 
-  abstract bool isAtEnd();
+  bool isAtEnd();
 
   /**
    * Restores the limit to a particular absolute position as returned from

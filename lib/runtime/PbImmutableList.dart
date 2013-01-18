@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+part of protobuf;
+
 /*
  * This is a wrapper around a fixed-length list with modifications disabled.
  */
@@ -64,7 +66,7 @@ class PbImmutableList<T> implements List<T>, Hashable {
 
   Iterator<T> iterator() => _wrappedList.iterator();
 
-  T last() => this[length - 1];
+  T get last => this[length - 1];
 
   int lastIndexOf(T element, [int start = null]) =>
       _wrappedList.lastIndexOf(element, start);
@@ -76,37 +78,37 @@ class PbImmutableList<T> implements List<T>, Hashable {
   }
 
   void operator []=(int index, T value) {
-    throw const UnsupportedOperationException(
+    throw new UnsupportedError(
         "Cannot modify an immutable list");
   }
 
   void copyFrom(List src, int srcStart, int dstStart, int count) {
-    throw const UnsupportedOperationException(
+    throw new UnsupportedError(
         "Cannot modify an immutable list");
   }
 
   void setRange(int start, int length, List<T> from, [int startFrom = 0]) {
-    throw const UnsupportedOperationException(
+    throw new UnsupportedError(
         "Cannot modify an immutable list");
   }
 
   void removeRange(int start, int length) {
-    throw const UnsupportedOperationException(
+    throw new UnsupportedError(
         "Cannot remove range of an immutable list");
   }
 
   void insertRange(int start, int length, [T initialValue = null]) {
-    throw const UnsupportedOperationException(
+    throw new UnsupportedError(
         "Cannot insert range in an immutable list");
   }
 
-  void sort(int compare(T a, T b)) {
-    throw const UnsupportedOperationException(
+  void sort([int compare(T a, T b)]) {
+    throw new UnsupportedError(
         "Cannot modify an immutable list");
   }
 
   void add(T element) {
-    throw const UnsupportedOperationException(
+    throw new UnsupportedError(
         "Cannot add to an immutable list");
   }
 
@@ -115,22 +117,22 @@ class PbImmutableList<T> implements List<T>, Hashable {
   }
 
   void addAll(Collection<T> elements) {
-    throw const UnsupportedOperationException(
+    throw new UnsupportedError(
         "Cannot add to an immutable list");
   }
 
   void clear() {
-    throw const UnsupportedOperationException(
+    throw new UnsupportedError(
         "Cannot clear an immutable list");
   }
 
   void set length(int length) {
-    throw const UnsupportedOperationException(
+    throw new UnsupportedError(
         "Cannot change the length of an immutable list");
   }
 
   T removeLast() {
-    throw const UnsupportedOperationException(
+    throw new UnsupportedError(
         "Cannot remove in a non-extendable list");
   }
 
@@ -146,9 +148,13 @@ class PbImmutableList<T> implements List<T>, Hashable {
 
   bool some(bool f(T element)) => _wrappedList.some(f);
 
-  bool isEmpty() => _wrappedList.isEmpty();
+  bool get isEmpty => _wrappedList.isEmpty;
   
   Collection map(f(T element)) {
     throw "not implemented";
   }
+  bool contains(T element) => _wrappedList.contains(element);
+  dynamic reduce(dynamic initialValue, combine(var previousValue, T element)) => _wrappedList.reduce(initialValue, combine);
+  T get first => _wrappedList.first;
+  T removeAt(int position) {throw new UnsupportedError("Cannot remove from an immutable list");}
 }

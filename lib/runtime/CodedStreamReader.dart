@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+part of protobuf;
+
 class CodedStreamReader extends CodedReader {
   PbInputStreamReader _input;
 
@@ -147,7 +149,7 @@ class CodedStreamReader extends CodedReader {
     try {
       _bufferPos++;
       _checkLimit();
-    } catch (InvalidProtocolBufferException e) {
+    } on InvalidProtocolBufferException catch (e) {
       // add a Future.immediateException() construct...
       Completer<int> c = new Completer<int>();
       c.completeException(e);
@@ -165,7 +167,7 @@ class CodedStreamReader extends CodedReader {
     try {
       _bufferPos += size;
       _checkLimit();
-    } catch (InvalidProtocolBufferException e) {
+    } on InvalidProtocolBufferException catch (e) {
       // add a Future.immediateException() construct...
       Completer<int> c = new Completer<int>();
       c.completeException(e);

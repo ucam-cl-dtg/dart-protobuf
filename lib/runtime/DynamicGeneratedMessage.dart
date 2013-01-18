@@ -2,16 +2,19 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+part of protobuf;
+
 /**
  * Provides an implementation of 'noSuchMethod' that may be used as a
  * substitute for fixed getter and setter methods.
  */
-class DynamicGeneratedMessage extends GeneratedMessage {
+class DynamicGeneratedMessage implements GeneratedMessage {
 
   /**
    * Implement getXxx and hasXxx methods dynamically.
    */
-  Dynamic noSuchMethod(String name, List args) {
+  noSuchMethod(InvocationMirror mirror) {
+    String name = mirror.memberName;
     if (name.startsWith("get:")) {
       int tagNumber = getTagNumber(name.substring(4));
       if (tagNumber != null) {

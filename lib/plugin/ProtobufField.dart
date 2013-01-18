@@ -2,18 +2,20 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+part of protobuf_generator;
+
 class ProtobufField {
 
   // Whitespace
   static final String sp = MessageGenerator.sp;
 
   static final RegExp HEX_LITERAL_REGEX =
-      const RegExp(r"^0x[0-9a-f]+$", false, true);
-  static final RegExp INTEGER_LITERAL_REGEX = const RegExp(r"^[+-]?[0-9]+$");
+      new RegExp(r"^0x[0-9a-f]+$",ignoreCase : true);
+  static final RegExp INTEGER_LITERAL_REGEX = new RegExp(r"^[+-]?[0-9]+$");
   static final RegExp DECIMAL_LITERAL_REGEX_A =
-      const RegExp(r"^[+-]?([0-9]*)\.[0-9]+(e[+-]?[0-9]+)?$", false, true);
+      new RegExp(r"^[+-]?([0-9]*)\.[0-9]+(e[+-]?[0-9]+)?$", ignoreCase : true);
   static final RegExp DECIMAL_LITERAL_REGEX_B =
-      const RegExp(r"^[+-]?[0-9]+e[+-]?[0-9]+$", false, true);
+      new RegExp(r"^[+-]?[0-9]+e[+-]?[0-9]+$", ignoreCase : true);
 
   static int _maxIndex = 0;
 
@@ -45,15 +47,15 @@ class ProtobufField {
   bool get repeats => _repeats;
   bool get single => !repeats;
 
-  bool get group => type === GoogleProtobuf_FieldDescriptorProto_Type.TYPE_GROUP;
-  bool get message => type === GoogleProtobuf_FieldDescriptorProto_Type.TYPE_MESSAGE;
-  bool get enum => type === GoogleProtobuf_FieldDescriptorProto_Type.TYPE_ENUM;
+  bool get group => type == GoogleProtobuf_FieldDescriptorProto_Type.TYPE_GROUP;
+  bool get message => type == GoogleProtobuf_FieldDescriptorProto_Type.TYPE_MESSAGE;
+  bool get enum => type == GoogleProtobuf_FieldDescriptorProto_Type.TYPE_ENUM;
   bool get primitive => !group && !message;
 
   // Initializer to be applied in the initialize() function
   String _initialization = null;
   String get initialization => _initialization;
-  bool get hasInitialization => _initialization !== null;
+  bool get hasInitialization => _initialization != null;
 
   bool _required = false;
   bool get required => _required;
@@ -177,9 +179,9 @@ class ProtobufField {
     String _repeatingFieldType(String typeString) => "List<$typeString>";
 
     _required =
-        _field.label === GoogleProtobuf_FieldDescriptorProto_Label.LABEL_REQUIRED;
+        _field.label == GoogleProtobuf_FieldDescriptorProto_Label.LABEL_REQUIRED;
     _repeats =
-        _field.label === GoogleProtobuf_FieldDescriptorProto_Label.LABEL_REPEATED;
+        _field.label == GoogleProtobuf_FieldDescriptorProto_Label.LABEL_REPEATED;
 
     var write;
     if (repeats) {
@@ -214,28 +216,20 @@ class ProtobufField {
         if (!repeats) {
           if (_field.hasDefaultValue() &&
               ("0.0" != _field.defaultValue || "0" != _field.defaultValue)) {
-            switch(true) {
-              case _field.defaultValue == "inf":
+            if (_field.defaultValue == "inf") {
                 _initialization = "()${sp}=>${sp}double.INFINITY";
-                break;
-              case _field.defaultValue == "-inf":
+            } else if (_field.defaultValue == "-inf") {
                 _initialization = "()${sp}=>${sp}double.NEGATIVE_INFINITY";
-                break;
-              case _field.defaultValue == "nan":
+            } else if (_field.defaultValue == "nan") {
                 _initialization = "()${sp}=>${sp}double.NAN";
-                break;
-              case HEX_LITERAL_REGEX.hasMatch(_field.defaultValue):
+            } else if (HEX_LITERAL_REGEX.hasMatch(_field.defaultValue)){
                 _initialization = "()${sp}=>${sp}(${_field.defaultValue})"
                     ".toDouble()";
-                break;
-              case INTEGER_LITERAL_REGEX.hasMatch(_field.defaultValue):
+            } else if (INTEGER_LITERAL_REGEX.hasMatch(_field.defaultValue)) {
                 _initialization = "()${sp}=>${sp}${_field.defaultValue}.0";
-                break;
-              case DECIMAL_LITERAL_REGEX_A.hasMatch(_field.defaultValue):
-              case DECIMAL_LITERAL_REGEX_B.hasMatch(_field.defaultValue):
+            } else if (DECIMAL_LITERAL_REGEX_A.hasMatch(_field.defaultValue) || DECIMAL_LITERAL_REGEX_B.hasMatch(_field.defaultValue)) {
                 _initialization = "()${sp}=>${sp}${_field.defaultValue}";
-                break;
-              default:
+            } else {
                 throw InvalidDefaultValue.invalidDoubleValue(_field.name,
                     _field.defaultValue);
             }
@@ -298,7 +292,7 @@ class ProtobufField {
         _typeString = write("String");
         _codedStreamType = "String";
         if (!repeats) {
-          if (_field.hasDefaultValue() && !_field.defaultValue.isEmpty()) {
+          if (_field.hasDefaultValue() && !_field.defaultValue.isEmpty) {
             _initialization = "()${sp}=>${sp}'${_field.defaultValue}'";
           }
         }
@@ -308,8 +302,8 @@ class ProtobufField {
         _typeString = write("List<int>");
         _codedStreamType = "Bytes";
         if (!repeats) {
-          if (_field.hasDefaultValue() && !_field.defaultValue.isEmpty()) {
-            List<int> bytes = _field.defaultValue.charCodes();
+          if (_field.hasDefaultValue() && !_field.defaultValue.isEmpty) {
+            List<int> bytes = _field.defaultValue.charCodes;
             bool firstTime = true;
 
             StringBuffer sb = new StringBuffer();
@@ -328,7 +322,7 @@ class ProtobufField {
         break;
       case GoogleProtobuf_FieldDescriptorProto_Type.TYPE_GROUP:
         ProtobufContainer groupType = _context[typeName];
-        if (groupType !== null) {
+        if (groupType != null) {
           _baseType = groupType.classname;
           _typeString = write(groupType.classname);
           _codedStreamType = "Group";
@@ -339,7 +333,7 @@ class ProtobufField {
         break;
       case GoogleProtobuf_FieldDescriptorProto_Type.TYPE_MESSAGE:
         ProtobufContainer messageType = _context[typeName];
-        if (messageType !== null) {
+        if (messageType != null) {
           _baseType = messageType.classname;
           _typeString = write(messageType.classname);
           _codedStreamType = "Message";
@@ -350,7 +344,7 @@ class ProtobufField {
         break;
       case GoogleProtobuf_FieldDescriptorProto_Type.TYPE_ENUM:
         EnumGenerator enumType = _context[typeName];
-        if (enumType !== null) {
+        if (enumType != null) {
           _baseType = enumType.classname;
           _typeString = write(enumType.classname);
           _codedStreamType = "Enum";

@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+part of protobuf_generator;
+
 class EnumAlias {
   EnumAlias(GoogleProtobuf_EnumValueDescriptorProto this.value,
       GoogleProtobuf_EnumValueDescriptorProto this.canonicalValue);
@@ -17,10 +19,10 @@ class EnumGenerator implements ProtobufContainer {
   EnumGenerator(GoogleProtobuf_EnumDescriptorProto this._descriptor,
       ProtobufContainer this._parent, GenerationContext this._context)
     : _canonicalValues = [], _aliases = [] {
-    _classname = _parent === null ?
+    _classname = _parent == null ?
         _descriptor.name :
         "${_parent.classname}_${_descriptor.name}";
-    _fqname = _parent === null ?
+    _fqname = _parent == null ?
         _descriptor.name :
         "${_parent.fqname}.${_descriptor.name}";
     _optimizeFor = _parent != null ? _parent.optimizeFor : null;
@@ -28,7 +30,7 @@ class EnumGenerator implements ProtobufContainer {
     for (GoogleProtobuf_EnumValueDescriptorProto value in _descriptor.value) {
       GoogleProtobuf_EnumValueDescriptorProto canonicalValue =
           findValueByNumber(value.number);
-      if (value === canonicalValue) {
+      if (value == canonicalValue) {
         _canonicalValues.add(value);
       } else {
         _aliases.add(new EnumAlias(value, canonicalValue));

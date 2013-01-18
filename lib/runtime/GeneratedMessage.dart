@@ -2,10 +2,12 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+part of protobuf;
+
 class GeneratedMessage implements Message, Hashable {
 
   BuilderInfo _builderInfo;
-  Map<int, Dynamic> _fieldValues;
+  Map<int, dynamic> _fieldValues;
   int _memoizedHashCode = -1;
   int _memoizedIsInitialized = -1;
   int _memoizedSerializedSize = -1;
@@ -30,7 +32,7 @@ class GeneratedMessage implements Message, Hashable {
 
   GeneratedMessage(Builder builder)
     : _builderInfo = builder.info_,
-      _fieldValues = new Map<int, Dynamic>(),
+      _fieldValues = new Map<int, dynamic>(),
       _serializedSize = new Map<int, int>(),
       _unknownFields = builder.unknownFields;
 
@@ -48,7 +50,7 @@ class GeneratedMessage implements Message, Hashable {
     }
 
     // because lengths are equal, sufficient to test inclusion in 1 direction.
-    for (int key in _fieldValues.getKeys()) {
+    for (int key in _fieldValues.keys) {
       if (!om._fieldValues.containsKey(key) ||
           _fieldValues[key] != om._fieldValues[key]) {
         return false;
@@ -62,10 +64,10 @@ class GeneratedMessage implements Message, Hashable {
     return true; // fixme
   }
 
-  Dynamic getField(int tagNumber) {
+  getField(int tagNumber) {
     var value = _fieldValues[tagNumber];
     // Initialize the field
-    if (value === null) {
+    if (value == null) {
       var defaultFunc = _builderInfo.makeDefault(tagNumber);
       if (defaultFunc != null) {
         value = defaultFunc();
@@ -83,7 +85,7 @@ class GeneratedMessage implements Message, Hashable {
   }
 
   // Shorthand for getField
-  Dynamic g_(int tagNumber) => getField(tagNumber);
+  g_(int tagNumber) => getField(tagNumber);
 
   int getSerializedSize() {
     if (_memoizedSerializedSize != -1) return _memoizedSerializedSize;
@@ -296,7 +298,7 @@ class GeneratedMessage implements Message, Hashable {
       dataSize += sizeFunc(val);
     }
     _serializedSize[tagNumber] = dataSize;
-    if (!values.isEmpty()) {
+    if (!values.isEmpty) {
       dataSize += CodedBufferWriter.computeInt32Size(tagNumber, dataSize);
     }
     return dataSize;
@@ -318,16 +320,16 @@ class GeneratedMessage implements Message, Hashable {
   int get hashCode {
     if (_memoizedHashCode == -1) {
       _memoizedHashCode = 0;
-      for (int tagNumber in _fieldValues.getKeys()) {
+      for (int tagNumber in _fieldValues.keys) {
         _memoizedHashCode = (17 * _memoizedHashCode) + tagNumber;
         var value = _fieldValues[tagNumber];
         if (value is Hashable) {
-          _memoizedHashCode = (31 * _memoizedHashCode) + value.hashCode();
+          _memoizedHashCode = (31 * _memoizedHashCode) + value.hashCode;
         }
       }
       if (_unknownFields != null) {
         _memoizedHashCode =
-            (23 * _memoizedHashCode) + _unknownFields.hashCode();
+            (23 * _memoizedHashCode) + _unknownFields.hashCode;
       }
     }
     return _memoizedHashCode;
@@ -368,7 +370,7 @@ class GeneratedMessage implements Message, Hashable {
     }
 
     // Sort output by tag number
-    List<FieldInfo> fields = new List<FieldInfo>.from(_builderInfo.fieldInfo.getValues());
+    List<FieldInfo> fields = new List<FieldInfo>.from(_builderInfo.fieldInfo.values);
     fields.sort((a, b) => a.tagNumber.compareTo(b.tagNumber));
     List<String> keys = fields.map((FieldInfo field) => field.name);
 
@@ -641,10 +643,10 @@ class GeneratedMessage implements Message, Hashable {
    * Returns the value of the given extension.  For repeated fields that have
    * not been set previously, [:null:] is returned.
    */
-  Dynamic getExtension(Extension extension) {
+  getExtension(Extension extension) {
     var value = _fieldValues[extension.tagNumber];
     // Initialize the field
-    if (value === null) {
+    if (value == null) {
       var defaultFunc = extension.makeDefault;
       if (defaultFunc != null) {
         value = defaultFunc();
@@ -658,7 +660,7 @@ class GeneratedMessage implements Message, Hashable {
 
   int getExtensionCount(Extension extension) {
     List list = _fieldValues[extension.tagNumber];
-    return list === null ? 0 : list.length;
+    return list == null ? 0 : list.length;
   }
 
   // JSON support
@@ -721,7 +723,7 @@ class GeneratedMessage implements Message, Hashable {
 
   // Convert this message to JSON, appending it to a StringBuffer
   String _toJson(StringBuffer sb) {
-    List<int> keys = new List<int>.from(_fieldValues.getKeys());
+    List<int> keys = new List<int>.from(_fieldValues.keys);
     keys.sort((a, b) => a.compareTo(b));
     sb.add("{");
     bool firstTime = true;
