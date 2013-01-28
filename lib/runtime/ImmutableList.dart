@@ -161,8 +161,8 @@ class ImmutableList<T> implements List<T> {
   String join([String separator]) => _wrappedList.join(separator);
   List<T> toList() => _wrappedList.toList();
   Set<T> toSet() => _wrappedList.toSet();
-  T min([int compare(T,T)]) => _wrappedList.min(compare);
-  T max([int compare(T,T)]) => _wrappedList.max(compare);
+  T min([int compare(a,b)]) => _wrappedList.min(compare);
+  T max([int compare(a,b)]) => _wrappedList.max(compare);
   Iterable<T> take(int n) => _wrappedList.take(n);
   Iterable<T> takeWhile(bool f(T)) => _wrappedList.takeWhile(f);
   Iterable<T> skip(int n) => _wrappedList.skip(n);

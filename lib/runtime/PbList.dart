@@ -353,8 +353,8 @@ class PbList<E> implements List<E> {
   String join([separator]) => _wrappedList.join(separator);
   List<E> toList() => _wrappedList.toList();
   Set<E> toSet() => _wrappedList.toSet();
-  E min([int compare(E,E)]) => _wrappedList.min(compare);
-  E max([int compare(E,E)]) => _wrappedList.max(compare);
+  E min([int compare(a,b)]) => _wrappedList.min(compare);
+  E max([int compare(a,b)]) => _wrappedList.max(compare);
   Iterable<E> take(int n) => _wrappedList.take(n);
   Iterable<E> takeWhile(bool f(T)) => _wrappedList.takeWhile(f);
   Iterable<E> skip(int n) => _wrappedList.skip(n);
