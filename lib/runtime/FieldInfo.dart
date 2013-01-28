@@ -18,7 +18,7 @@ class FieldInfo {
   FieldInfo(String this.name, int this.tagNumber, int type,
       [MakeDefaultFunc makeDefault, CreateBuilderFunc this.subBuilder = null,
       ValueOfFunc this.valueOf = null])
-      : this.type = type, this.makeDefault = 
+      : this.type = type, this.makeDefault =
         makeDefault == null ? Builder._defaultForType(type) : makeDefault;
 
   String toString() => name;

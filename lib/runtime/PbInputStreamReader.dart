@@ -14,7 +14,7 @@ class PbInputStreamReader implements PbReader {
   int get position => _position;
 
   Future<int> readByte() =>
-     readBytes(1).transform((List<int> b) => b.length > 0 ? b[0] : null);
+     readBytes(1).then((List<int> b) => b.length > 0 ? b[0] : null);
 
   Future<List<int>> readBytes([int count = -1]) {
     if (_completer != null) throw new PbBufferBusyStateException();
@@ -84,7 +84,7 @@ class PbInputStreamReader implements PbReader {
 
   void _handleError(Exception e) {
     _reset();
-    _completer.completeException(e);
+    _completer.completeError(e);
   }
 
   /**

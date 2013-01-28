@@ -27,7 +27,7 @@ class PbList<E> implements List<E> {
   /**
    * Returns an [Iterator] for the list.
    */
-  Iterator<E> iterator() => _wrappedList.iterator();
+  Iterator<E> get iterator => _wrappedList.iterator;
 
   /**
    * Returns the element at the given [index] in the list or throws
@@ -146,7 +146,7 @@ class PbList<E> implements List<E> {
    */
   E removeLast() {
     _ensureMutable();
-    var value = _wrappedList.removeLast();
+    PbList.E value = _wrappedList.removeLast();
     _modified();
     return value;
   }
@@ -232,7 +232,7 @@ class PbList<E> implements List<E> {
    * An element satisfies the predicate [f] if [:f(element):]
    * returns true.
    */
-  Collection<E> filter(bool f(E element)) => _wrappedList.filter(f);
+  Collection<E> where(bool f(E element)) => _wrappedList.where(f);
 
   /**
    * Returns true if every elements of this collection satisify the
@@ -244,7 +244,7 @@ class PbList<E> implements List<E> {
    * Returns true if one element of this collection satisfies the
    * predicate [f]. Returns false otherwise.
    */
-  bool some(bool f(E element)) => _wrappedList.some(f);
+  bool any(bool f(E element)) => _wrappedList.any(f);
 
   /**
    * Returns true if there is no element in this collection.
@@ -306,7 +306,7 @@ class PbList<E> implements List<E> {
     if (_listener != null) _listener.onChanged();
   }
 
-  Collection map(f(E element)) {
+  Collection mappedBy(f(E element)) {
     throw new UnimplementedError();
   }
 
@@ -314,16 +314,55 @@ class PbList<E> implements List<E> {
   List<E> _mutableList;
   List<E> _immutableList;
   List<E> _wrappedList;
-  
+
   bool contains(E element) => _wrappedList.contains(element);
   dynamic reduce(dynamic initialValue, combine(var previousValue, E element)) => _wrappedList.reduce(initialValue, combine);
   E get first => _wrappedList.first;
+  void remove(E object) {
+    _ensureMutable();
+    _wrappedList.remove(object);
+    _modified();
+  }
   E removeAt(int index) {
     _ensureMutable();
     E value = _wrappedList.removeAt(index);
     _modified();
     return value;
   }
+  void removeAll(Iterable<E> all){
+    _ensureMutable();
+   _wrappedList.removeAll(all);
+    _modified();
+  }
+  void retainAll(Iterable<E> all){
+    _ensureMutable();
+   _wrappedList.retainAll(all);
+    _modified();
+  }
+  void retainMatching(bool test(E)){
+    _ensureMutable();
+   _wrappedList.retainMatching(test);
+    _modified();
+  }
+  void removeMatching(bool test(E)){
+    _ensureMutable();
+   _wrappedList.removeMatching(test);
+    _modified();
+  }
+  E get single => _wrappedList.single;
+  String join([separator]) => _wrappedList.join(separator);
+  List<E> toList() => _wrappedList.toList();
+  Set<E> toSet() => _wrappedList.toSet();
+  E min([int compare(E,E)]) => _wrappedList.min(compare);
+  E max([int compare(E,E)]) => _wrappedList.max(compare);
+  Iterable<E> take(int n) => _wrappedList.take(n);
+  Iterable<E> takeWhile(bool f(T)) => _wrappedList.takeWhile(f);
+  Iterable<E> skip(int n) => _wrappedList.skip(n);
+  Iterable<E> skipWhile(bool f(E)) => _wrappedList.skipWhile(f);
+  E firstMatching(bool test(E), {E orElse()}) => _wrappedList.firstMatching(test, orElse: orElse);
+  E lastMatching(bool test(E), {E orElse()}) => _wrappedList.lastMatching(test, orElse: orElse);
+  E singleMatching(bool test(E)) => _wrappedList.singleMatching(test);
+  E elementAt(int n) => _wrappedList.elementAt(n);
 }
 
 /**

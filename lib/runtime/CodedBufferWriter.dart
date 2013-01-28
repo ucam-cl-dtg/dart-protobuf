@@ -268,7 +268,7 @@ class CodedBufferWriter {
     buffer[_position++] = value & 0xff;
   }
 
-  void writeRawBytes(List<int> value, [int offset = 0, int length = null]) {
+  void writeRawBytes(List<int> value, {int offset: 0, int length: null}) {
     if (length == null) {
       length = value.length - offset;
     }

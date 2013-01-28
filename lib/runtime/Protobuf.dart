@@ -6,8 +6,9 @@ library protobuf;
 
 import 'dart:io';
 import 'dart:utf';
-import 'dart:json';
+import 'dart:json' as JSON;
 import 'dart:core';
+import 'dart:async';
 import 'dart:scalarlist';
 import 'dart:math' as Math;
 import 'package:bignum/src/fixnum/fixnum.dart';
@@ -27,6 +28,7 @@ part 'Extension.dart';
 part 'ExtensionRegistry.dart';
 part 'FieldInfo.dart';
 part 'GeneratedMessage.dart';
+part 'ImmutableList.dart';
 part 'Message.dart';
 part 'PbByteBuffer.dart';
 part 'PbCodec.dart';

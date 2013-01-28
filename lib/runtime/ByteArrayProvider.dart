@@ -7,11 +7,11 @@ part of protobuf;
 /**
  * Provides a ByteArray based version of integer arrays.
  */
- 
+
 //#import 'dart:html';
 //#import('dart:core');
 
- 
+
 List<int> createIntArray(int length) => new Uint8List(length);
 List<int> createIntArrayFrom(List<int> source) {
   Uint8List array = new Uint8List(source.length);

@@ -8,7 +8,7 @@ class GoogleProtobufCompiler_CodeGeneratorRequest extends GeneratedMessage {
   static GoogleProtobufCompiler_CodeGeneratorRequest _d;
   static GoogleProtobufCompiler_CodeGeneratorRequest_Builder newBuilder() => new GoogleProtobufCompiler_CodeGeneratorRequest_Builder();
   static GoogleProtobufCompiler_CodeGeneratorRequest get defaultInstance => null == _d ? (_d = newBuilder().buildPartial()) : _d;
-  static GoogleProtobufCompiler_CodeGeneratorRequest parseFromBuffer(List<int> i, [ExtensionRegistry r]) => GeneratedMessage.parseBuffer(newBuilder(), i, r);
+  static GoogleProtobufCompiler_CodeGeneratorRequest parseFromBuffer(List<int> i, {ExtensionRegistry r}) => GeneratedMessage.parseBuffer(newBuilder(), i, r);
   static Future<GoogleProtobufCompiler_CodeGeneratorRequest> parseFromStream(InputStream i, [ExtensionRegistry r]) => GeneratedMessage.parseStream(newBuilder(), i, r);
   static GoogleProtobufCompiler_CodeGeneratorRequest parseFromJson(String i, [ExtensionRegistry r]) => GeneratedMessage.parseJson(newBuilder(), i, r);
   GoogleProtobufCompiler_CodeGeneratorRequest._fromBuilder(GoogleProtobufCompiler_CodeGeneratorRequest_Builder b) : super(b);

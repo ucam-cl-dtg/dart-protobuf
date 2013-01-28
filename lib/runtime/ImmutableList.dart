@@ -2,10 +2,12 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+part of protobuf;
+
 /*
  * This is a wrapper around a fixed-length list with modifications disabled.
  */
-class ImmutableList<T> implements List<T>, Hashable {
+class ImmutableList<T> implements List<T> {
   List<T> _wrappedList;
   int _memoizedHashCode = -1;
 
@@ -43,9 +45,7 @@ class ImmutableList<T> implements List<T>, Hashable {
     if (_memoizedHashCode == -1) {
       _memoizedHashCode = 13 * length;
       for (var entry in this) {
-        if (entry is Hashable) {
-          _memoizedHashCode = (19 * _memoizedHashCode) + entry.hashCode;
-        }
+        _memoizedHashCode = (19 * _memoizedHashCode) + entry.hashCode;
       }
     }
     return _memoizedHashCode;
@@ -59,7 +59,7 @@ class ImmutableList<T> implements List<T>, Hashable {
   int indexOf(T element, [int start = 0]) =>
       _wrappedList.indexOf(element, start);
 
-  Iterator<T> iterator() => _wrappedList.iterator();
+  Iterator<T> get iterator => _wrappedList.iterator;
 
   T get last => this[length - 1];
 
@@ -137,19 +137,38 @@ class ImmutableList<T> implements List<T>, Hashable {
 
   void forEach(f(T element)) => _wrappedList.forEach(f);
 
-  Collection<T> filter(bool f(T element)) => _wrappedList.filter(f);
+  Collection<T> where(bool f(T element)) => _wrappedList.where(f);
 
   bool every(bool f(T element)) => _wrappedList.every(f);
 
-  bool some(bool f(T element)) => _wrappedList.some(f);
+  bool any(bool f(T element)) => _wrappedList.any(f);
 
   bool get isEmpty => _wrappedList.isEmpty;
-  
-  Collection map(f(T element)) {
+
+  Collection mappedBy(f(T element)) {
     throw new UnimplementedError();
   }
   bool contains(T element ) => _wrappedList.contains(element);
   dynamic reduce(dynamic initialValue, combine(var previousValue, T element)) => _wrappedList.reduce(initialValue, combine);
   T get first => _wrappedList.first;
   T removeAt(int position) {throw new UnsupportedError("Cannot remove from an immutable list");}
+  void remove(T object) {throw new UnsupportedError("Cannot remove from an immutable list");}
+  void removeAll(Iterable<T> all) {throw new UnsupportedError("Cannot remove from an immutable list");}
+  void removeMatching(bool f (T)) {throw new UnsupportedError("Cannot remove from an immutable list");}
+  void retainMatching(bool f (T)) {throw new UnsupportedError("Cannot remove from an immutable list");}
+  void retainAll(Iterable<T> all) {throw new UnsupportedError("Cannot remove from an immutable list");}
+  T get single => _wrappedList.single;
+  String join([String separator]) => _wrappedList.join(separator);
+  List<T> toList() => _wrappedList.toList();
+  Set<T> toSet() => _wrappedList.toSet();
+  T min([int compare(T,T)]) => _wrappedList.min(compare);
+  T max([int compare(T,T)]) => _wrappedList.max(compare);
+  Iterable<T> take(int n) => _wrappedList.take(n);
+  Iterable<T> takeWhile(bool f(T)) => _wrappedList.takeWhile(f);
+  Iterable<T> skip(int n) => _wrappedList.skip(n);
+  Iterable<T> skipWhile(bool f(T)) => _wrappedList.skipWhile(f);
+  T firstMatching(bool test(T), {T orElse()}) => _wrappedList.firstMatching(test, orElse: orElse);
+  T lastMatching(bool test(T), {T orElse()}) => _wrappedList.lastMatching(test, orElse: orElse);
+  T singleMatching(bool test(T)) => _wrappedList.singleMatching(test);
+  T elementAt(int n) => _wrappedList.elementAt(n);
 }

@@ -25,6 +25,6 @@ class Extension extends FieldInfo {
     }
     return extendee == o.extendee && tagNumber == o.tagNumber;
   }
-  
+
 }
 

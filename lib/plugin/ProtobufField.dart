@@ -10,12 +10,12 @@ class ProtobufField {
   static final String sp = MessageGenerator.sp;
 
   static final RegExp HEX_LITERAL_REGEX =
-      new RegExp(r"^0x[0-9a-f]+$",ignoreCase : true);
+      new RegExp(r"^0x[0-9a-f]+$",caseSensitive : false);
   static final RegExp INTEGER_LITERAL_REGEX = new RegExp(r"^[+-]?[0-9]+$");
   static final RegExp DECIMAL_LITERAL_REGEX_A =
-      new RegExp(r"^[+-]?([0-9]*)\.[0-9]+(e[+-]?[0-9]+)?$", ignoreCase : true);
+      new RegExp(r"^[+-]?([0-9]*)\.[0-9]+(e[+-]?[0-9]+)?$", caseSensitive : false);
   static final RegExp DECIMAL_LITERAL_REGEX_B =
-      new RegExp(r"^[+-]?[0-9]+e[+-]?[0-9]+$", ignoreCase : true);
+      new RegExp(r"^[+-]?[0-9]+e[+-]?[0-9]+$", caseSensitive : false);
 
   static int _maxIndex = 0;
 
@@ -183,7 +183,7 @@ class ProtobufField {
     _repeats =
         _field.label == GoogleProtobuf_FieldDescriptorProto_Label.LABEL_REPEATED;
 
-    var write;
+    Object write;
     if (repeats) {
       _packed = _field.options == null ? false : _field.options.packed;
       _index = -1;
@@ -384,7 +384,7 @@ class ProtobufField {
       }
 
       List<String> parts = name.split("_");
-      parts = parts.map((String x) => "${x[0].toUpperCase()}${x.substring(1)}");
+      parts = parts.mappedBy((String x) => "${x[0].toUpperCase()}${x.substring(1)}");
       name = Strings.join(parts, '');
       if (name.length > 0) {
         name = "${name[0].toLowerCase()}${name.substring(1)}";

@@ -421,7 +421,7 @@ abstract class Builder implements ChangeListener {
   }
 
   Object getField(int tagNumber) {
-    var value = _fieldValues[tagNumber];
+    Object value = _fieldValues[tagNumber];
     // Initialize the field
     if (value == null) {
       MakeDefaultFunc makeDefaultFunc = info_.makeDefault(tagNumber);
@@ -599,7 +599,7 @@ abstract class Builder implements ChangeListener {
           break;
         case _OPTIONAL_ENUM:
           int rawValue = input.readEnum();
-          var value = _getValueOfFunc(tagNumber, extensionRegistry)(rawValue);
+          ProtobufEnum value = _getValueOfFunc(tagNumber, extensionRegistry)(rawValue);
           if (value == null) {
             unknownFieldSetBuilder.mergeVarintField(tagNumber, rawValue);
           } else {
@@ -672,7 +672,7 @@ abstract class Builder implements ChangeListener {
         case _REPEATED_ENUM:
           readPackableIoc(wireType, tagNumber, (var assigner){
             int rawValue = input.readEnum();
-            var value = _getValueOfFunc(tagNumber, extensionRegistry)(rawValue);
+            ProtobufEnum value = _getValueOfFunc(tagNumber, extensionRegistry)(rawValue);
             if (value == null) {
               unknownFieldSetBuilder.mergeVarintField(tagNumber, rawValue);
             } else {
@@ -811,12 +811,12 @@ abstract class Builder implements ChangeListener {
       List list = getField(tagNumber);
       if (wireType == WireFormat.WIRETYPE_LENGTH_DELIMITED) {
         // Packed
-        return input.readInt32().chain((int length) {
+        return input.readInt32().then((int length) {
           int limit = input._pushLimit(length);
           Future readUntilLimit() {
             if (input.getBytesUntilLimit() > 0) {
               return iocReadFunc((var v) => list.add(v))
-                  .chain(() => readUntilLimit());
+                  .then(() => readUntilLimit());
             } else {
               input._popLimit(limit);
               return merge();
@@ -825,13 +825,13 @@ abstract class Builder implements ChangeListener {
         });
       } else {
         // Not-packed
-        return iocReadFunc((var v) => list.add(v)).chain((_) => merge());
+        return iocReadFunc((var v) => list.add(v)).then((_) => merge());
       }
     }
 
     Future readPackable(int wireType, int tagNumber, var readFunc) =>
       readPackableIoc(wireType, tagNumber, (var assigner) =>
-        readFunc().transform((v) => assigner(v))
+        readFunc().then((v) => assigner(v))
       );
 
     bool wireTypeMatch(int tagNumber, int fieldType, int wireType) {
@@ -875,18 +875,18 @@ abstract class Builder implements ChangeListener {
       fieldType &= ~(Builder._PACKED_BIT | Builder._REQUIRED_BIT);
       switch (fieldType) {
         case Builder._OPTIONAL_BOOL:
-          return input.readBool().chain(assignAndMerge(tagNumber));
+          return input.readBool().then(assignAndMerge(tagNumber));
         case Builder._OPTIONAL_BYTES:
-          return input.readBytes().chain(assignAndMerge(tagNumber));
+          return input.readBytes().then(assignAndMerge(tagNumber));
         case Builder._OPTIONAL_STRING:
-          return input.readString().chain(assignAndMerge(tagNumber));
+          return input.readString().then(assignAndMerge(tagNumber));
         case Builder._OPTIONAL_FLOAT:
-          return input.readFloat().chain(assignAndMerge(tagNumber));
+          return input.readFloat().then(assignAndMerge(tagNumber));
         case Builder._OPTIONAL_DOUBLE:
-          return input.readDouble().chain(assignAndMerge(tagNumber));
+          return input.readDouble().then(assignAndMerge(tagNumber));
         case Builder._OPTIONAL_ENUM:
-          return input.readEnum().chain((int rawValue) {
-            var value = _getValueOfFunc(tagNumber, extensionRegistry)(rawValue);
+          return input.readEnum().then((int rawValue) {
+            ProtobufEnum value = _getValueOfFunc(tagNumber, extensionRegistry)(rawValue);
             if (value == null) {
               unknownFieldSetBuilder.mergeVarintField(tagNumber, rawValue);
             } else {
@@ -900,53 +900,53 @@ abstract class Builder implements ChangeListener {
             subBuilder.mergeFromMessage(getField(tagNumber));
           }
           return input.readGroup(tagNumber, subBuilder, extensionRegistry)
-              .chain((_) {
+              .then((_) {
                 _fieldValues[tagNumber] = subBuilder.buildPartial();
                 return merge();
               });
         case Builder._OPTIONAL_INT32:
-          return input.readInt32().chain(assignAndMerge(tagNumber));
+          return input.readInt32().then(assignAndMerge(tagNumber));
         case Builder._OPTIONAL_INT64:
-          return input.readInt64().chain(assignAndMerge(tagNumber));
+          return input.readInt64().then(assignAndMerge(tagNumber));
         case Builder._OPTIONAL_SINT32:
-          return input.readSint32().chain(assignAndMerge(tagNumber));
+          return input.readSint32().then(assignAndMerge(tagNumber));
         case Builder._OPTIONAL_SINT64:
-          return input.readSint64().chain(assignAndMerge(tagNumber));
+          return input.readSint64().then(assignAndMerge(tagNumber));
         case Builder._OPTIONAL_UINT32:
-          return input.readUint32().chain(assignAndMerge(tagNumber));
+          return input.readUint32().then(assignAndMerge(tagNumber));
         case Builder._OPTIONAL_UINT64:
-          return input.readUint64().chain(assignAndMerge(tagNumber));
+          return input.readUint64().then(assignAndMerge(tagNumber));
         case Builder._OPTIONAL_FIXED32:
-          return input.readFixed32().chain(assignAndMerge(tagNumber));
+          return input.readFixed32().then(assignAndMerge(tagNumber));
         case Builder._OPTIONAL_FIXED64:
-          return input.readFixed64().chain(assignAndMerge(tagNumber));
+          return input.readFixed64().then(assignAndMerge(tagNumber));
         case Builder._OPTIONAL_SFIXED32:
-          return input.readSfixed32().chain(assignAndMerge(tagNumber));
+          return input.readSfixed32().then(assignAndMerge(tagNumber));
         case Builder._OPTIONAL_SFIXED64:
-          return input.readSfixed64().chain(assignAndMerge(tagNumber));
+          return input.readSfixed64().then(assignAndMerge(tagNumber));
         case Builder._OPTIONAL_MESSAGE:
           Builder subBuilder = info_.subBuilder(tagNumber)();
           if (_fieldValues.containsKey(tagNumber)) {
             subBuilder.mergeFromMessage(getField(tagNumber));
           }
-          return input.readMessage(subBuilder, extensionRegistry).chain((_) {
+          return input.readMessage(subBuilder, extensionRegistry).then((_) {
             _fieldValues[tagNumber] = subBuilder.buildPartial();
             return merge();
           });
         case Builder._REPEATED_BOOL:
           return readPackable(wireType, tagNumber, input.readBool);
         case Builder._REPEATED_BYTES:
-          return input.readBytes().chain(appendAndMerge(tagNumber));
+          return input.readBytes().then(appendAndMerge(tagNumber));
         case Builder._REPEATED_STRING:
-          return input.readString().chain(appendAndMerge(tagNumber));
+          return input.readString().then(appendAndMerge(tagNumber));
         case Builder._REPEATED_FLOAT:
           return readPackable(wireType, tagNumber, input.readFloat);
         case Builder._REPEATED_DOUBLE:
           return readPackable(wireType, tagNumber, input.readDouble);
         case Builder._REPEATED_ENUM:
           return readPackableIoc(wireType, tagNumber, (var assigner) =>
-            input.readEnum().transform((int rawValue) {
-              var value =
+            input.readEnum().then((int rawValue) {
+              ProtobufEnum value =
                   _getValueOfFunc(tagNumber, extensionRegistry)(rawValue);
               if (value == null) {
                 unknownFieldSetBuilder.mergeVarintField(tagNumber, rawValue);
@@ -959,7 +959,7 @@ abstract class Builder implements ChangeListener {
         case Builder._REPEATED_GROUP:
           Builder subBuilder = info_.subBuilder(tagNumber)();
           return input.readGroup(tagNumber, subBuilder, extensionRegistry)
-              .chain((_) {
+              .then((_) {
                 List list = getField(tagNumber);
                 list.add(subBuilder.buildPartial());
                 return merge();
@@ -986,7 +986,7 @@ abstract class Builder implements ChangeListener {
           return readPackable(wireType, tagNumber, input.readSfixed64);
         case Builder._REPEATED_MESSAGE:
           Builder subBuilder = info_.subBuilder(tagNumber)();
-          return input.readMessage(subBuilder, extensionRegistry).chain((_) {
+          return input.readMessage(subBuilder, extensionRegistry).then((_) {
             List list = getField(tagNumber);
             list.add(subBuilder.buildPartial());
             return merge();
@@ -997,7 +997,7 @@ abstract class Builder implements ChangeListener {
     };
 
     Future mergeImpl() {
-      return input.readTag().chain((int tag) {
+      return input.readTag().then((int tag) {
         if (tag == 0) {
           unknownFields = unknownFieldSetBuilder.build();
           onChanged();
@@ -1019,7 +1019,7 @@ abstract class Builder implements ChangeListener {
         }
         if (fieldType == -1 || !wireTypeMatch(tagNumber, fieldType, wireType)) {
           return parseUnknownFieldFromStream(input, unknownFieldSetBuilder,
-              extensionRegistry, tag).chain((bool unknownTag) {
+              extensionRegistry, tag).then((bool unknownTag) {
                 if (!unknownTag) {
                   unknownFields = unknownFieldSetBuilder.build();
                   onChanged();
@@ -1033,7 +1033,7 @@ abstract class Builder implements ChangeListener {
       });
     };
     merge = mergeImpl;
-    return merge().transform((_) => this);
+    return merge().then((_) => this);
   }
 
   Future<Builder> mergeFromStream(InputStream input,
@@ -1042,7 +1042,7 @@ abstract class Builder implements ChangeListener {
         ExtensionRegistry.EMPTY_REGISTRY : extensionRegistry;
     CodedStreamReader codedInput = new CodedStreamReader(input);
     return mergeFromCodedStreamReader(codedInput, extensionRegistry)
-        .transform((_) {
+        .then((_) {
           codedInput.checkLastTagWas(0);
           return this;
         });
@@ -1093,7 +1093,7 @@ abstract class Builder implements ChangeListener {
       (int tagNumber, FieldInfo fieldInfo){
         int type = fieldInfo.type;
         if ((type & _REPEATED_BIT) != 0 && !hasField(tagNumber)) {
-          result._fieldValues[tagNumber] = PbImmutableList.EMPTY;
+          result._fieldValues[tagNumber] = ImmutableList.EMPTY;
         }
       }
     );
@@ -1227,14 +1227,14 @@ abstract class Builder implements ChangeListener {
       } else if (value is num) {
         return value.toDouble();
       } else if (value is String) {
-        return Math.parseDouble(value);
+        return double.parse(value);
       }
       expectedType = "num or stringified num";
       break;
     case _ENUM_BIT:
       // Allow quoted values, although we don't emit them
       if (value is String) {
-        value = Math.parseInt(value);
+        value = int.parse(value);
       }
       if (_isInt(value)) {
         return _getValueOfFunc(tagNumber, extensionRegistry)(value.toInt());
@@ -1250,7 +1250,7 @@ abstract class Builder implements ChangeListener {
       if (_isInt(value)) {
         return value.toInt();
       } else if (value is String) {
-        return Math.parseInt(value);
+        return int.parse(value);
       }
       expectedType = "int or stringified int";
       break;
@@ -1262,7 +1262,7 @@ abstract class Builder implements ChangeListener {
       // Allow unquoted values, although we don't emit them
       // TODO - decode large numbers as Packed64 on JavaScript platforms
       if (value is String) {
-        return Math.parseInt(value);
+        return int.parse(value);
       } else if (_isInt(value)) {
         return value.toInt();
       }
@@ -1331,7 +1331,7 @@ abstract class Builder implements ChangeListener {
   Builder _mergeFromJson(Map<String, Object> json,
       ExtensionRegistry extensionRegistry) {
     List<int> tags = new List<int>.from(
-        json.keys.map((x) => Math.parseInt(x)));
+        json.keys.mappedBy((x) => int.parse(x)));
     tags.sort((a, b) => a.compareTo(b));
 
     for (int tagNumber in tags) {

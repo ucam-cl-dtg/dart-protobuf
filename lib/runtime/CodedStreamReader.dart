@@ -7,9 +7,9 @@ part of protobuf;
 class CodedStreamReader extends CodedReader {
   PbInputStreamReader _input;
 
-  CodedStreamReader(InputStream input, [
-      int recursionLimit = CodedReader.DEFAULT_RECURSION_LIMIT,
-      int sizeLimit = CodedReader.DEFAULT_SIZE_LIMIT]) :
+  CodedStreamReader(InputStream input, {
+      int recursionLimit: CodedReader.DEFAULT_RECURSION_LIMIT,
+      int sizeLimit: CodedReader.DEFAULT_SIZE_LIMIT}) :
       super(recursionLimit, sizeLimit),
       _input = new PbInputStreamReader(input);
 
@@ -22,7 +22,7 @@ class CodedStreamReader extends CodedReader {
       throw InvalidProtocolBufferException.recursionLimitExceeded();
     }
     ++_recursionDepth;
-    return builder.mergeFromCodedStreamReader(this).transform((_) {
+    return builder.mergeFromCodedStreamReader(this).then((_) {
       checkLastTagWas(WireFormat.makeTag(fieldNumber,
           WireFormat.WIRETYPE_END_GROUP));
       --_recursionDepth;
@@ -35,7 +35,7 @@ class CodedStreamReader extends CodedReader {
       throw InvalidProtocolBufferException.recursionLimitExceeded();
     }
     ++_recursionDepth;
-    return builder.mergeFromCodedStreamReader(this).transform((_) {
+    return builder.mergeFromCodedStreamReader(this).then((_) {
       checkLastTagWas(WireFormat.makeTag(fieldNumber,
           WireFormat.WIRETYPE_END_GROUP));
       --_recursionDepth;
@@ -44,14 +44,14 @@ class CodedStreamReader extends CodedReader {
 
   Future readMessage(Builder builder, ExtensionRegistry extensionRegistry) {
     int oldLimit;
-    return readInt32().chain((int length) {
+    return readInt32().then((int length) {
       if(_recursionDepth >= _recursionLimit) {
         throw InvalidProtocolBufferException.recursionLimitExceeded();
       }
       oldLimit = _pushLimit(length);
       ++_recursionDepth;
       return builder.mergeFromCodedStreamReader(this);
-    }).transform((_){
+    }).then((_){
       checkLastTagWas(0);
       --_recursionDepth;
       _popLimit(oldLimit);
@@ -62,48 +62,48 @@ class CodedStreamReader extends CodedReader {
   Future<int> readEnum() => readInt32();
 
   Future<int> readInt32() =>
-      readRawVarint().transform((v) => PbCodec.toInt32(v));
+      readRawVarint().then((v) => PbCodec.toInt32(v));
 
   Future<int> readInt64() =>
-      readRawVarint().transform((v) => PbCodec.toInt64(v));
+      readRawVarint().then((v) => PbCodec.toInt64(v));
 
   Future<int> readUint32() =>
-      readRawVarint().transform((v) => PbCodec.toUint32(v));
+      readRawVarint().then((v) => PbCodec.toUint32(v));
 
   Future<int> readUint64() =>
-      readRawVarint().transform((v) => PbCodec.toUint64(v));
+      readRawVarint().then((v) => PbCodec.toUint64(v));
 
   Future<int> readSint32() =>
-      readRawVarint().transform((v) => PbCodec.toSint32(v));
+      readRawVarint().then((v) => PbCodec.toSint32(v));
 
   Future<int> readSint64() =>
-      readRawVarint().transform((v) => PbCodec.toSint64(v));
+      readRawVarint().then((v) => PbCodec.toSint64(v));
 
   Future<int> readFixed32() =>
-      readRaw32().transform((v) => PbCodec.toFixed32(v));
+      readRaw32().then((v) => PbCodec.toFixed32(v));
 
   Future<int> readFixed64() =>
-      readRaw64().transform((v) => PbCodec.toFixed64(v));
+      readRaw64().then((v) => PbCodec.toFixed64(v));
 
   Future<int> readSfixed32() =>
-      readRaw32().transform((v) => PbCodec.toSfixed32(v));
+      readRaw32().then((v) => PbCodec.toSfixed32(v));
 
   Future<int> readSfixed64() =>
-      readRaw64().transform((v) => PbCodec.toSfixed64(v));
+      readRaw64().then((v) => PbCodec.toSfixed64(v));
 
   Future<bool> readBool() =>
-      readRawVarint().transform((v) => PbCodec.toBool(v));
+      readRawVarint().then((v) => PbCodec.toBool(v));
 
   Future<List<int>> readBytes() => readRawLengthDelimited();
 
   Future<String> readString() =>
-      readRawLengthDelimited().transform((v) => decodeUtf8(v));
+      readRawLengthDelimited().then((v) => decodeUtf8(v));
 
   Future<double> readFloat() =>
-      readRaw32().transform((v) => PbCodec.toFloat(v));
+      readRaw32().then((v) => PbCodec.toFloat(v));
 
   Future<double> readDouble() =>
-      readRaw64().transform((v) => PbCodec.toDouble(v));
+      readRaw64().then((v) => PbCodec.toDouble(v));
 
 
   Future<int> readTag() {
@@ -111,7 +111,7 @@ class CodedStreamReader extends CodedReader {
       _lastTag = 0;
       return new Future<int>.immediate(0);
     }
-    return readInt32().transform((int value) {
+    return readInt32().then((int value) {
       _lastTag = value;
       if (WireFormat.getTagFieldNumber(_lastTag) == 0) {
         throw InvalidProtocolBufferException.invalidTag();
@@ -124,7 +124,7 @@ class CodedStreamReader extends CodedReader {
   Future<List<int>> readRawVarint() {
     List<int> rawBytes = [];
     Future completeVarint() {
-      return _readRawByte().chain((int value) {
+      return _readRawByte().then((int value) {
         if (value == null) {
           throw InvalidProtocolBufferException.truncatedMessage();
         }
@@ -136,14 +136,14 @@ class CodedStreamReader extends CodedReader {
         }
       });
     }
-    return completeVarint().transform((_) => rawBytes);
+    return completeVarint().then((_) => rawBytes);
   }
 
   Future<List<int>> readRaw32() => _readRawBytes(4);
   Future<List<int>> readRaw64() => _readRawBytes(8);
 
   Future<List<int>> readRawLengthDelimited() =>
-      readInt32().chain((int length) => _readRawBytes(length));
+      readInt32().then((int length) => _readRawBytes(length));
 
   Future<int> _readRawByte() {
     try {
@@ -152,10 +152,10 @@ class CodedStreamReader extends CodedReader {
     } on InvalidProtocolBufferException catch (e) {
       // add a Future.immediateException() construct...
       Completer<int> c = new Completer<int>();
-      c.completeException(e);
+      c.completeError(e);
       return c.future;
     }
-    return _input.readByte().transform((int byte) {
+    return _input.readByte().then((int byte) {
       if (byte == null) {
         throw InvalidProtocolBufferException.truncatedMessage();
       }
@@ -170,7 +170,7 @@ class CodedStreamReader extends CodedReader {
     } on InvalidProtocolBufferException catch (e) {
       // add a Future.immediateException() construct...
       Completer<int> c = new Completer<int>();
-      c.completeException(e);
+      c.completeError(e);
       return c.future;
     }
     return _input.readBytes(size);
@@ -181,25 +181,25 @@ class CodedStreamReader extends CodedReader {
     int wireType = tag & 0x7;
     switch (wireType) {
       case WireFormat.WIRETYPE_VARINT:
-        return readRawVarint().transform((_) => null);
+        return readRawVarint().then((_) => null);
       case WireFormat.WIRETYPE_FIXED64:
-        return readRaw64().transform((_) => null);
+        return readRaw64().then((_) => null);
       case WireFormat.WIRETYPE_LENGTH_DELIMITED:
-        return readRawLengthDelimited().transform((_) => null);
+        return readRawLengthDelimited().then((_) => null);
       case WireFormat.WIRETYPE_START_GROUP:
         UnknownFieldSet_Builder subBuilder =
             new UnknownFieldSet_Builder();
         return readUnknownFieldSetGroup(number, subBuilder,
-            ExtensionRegistry.EMPTY_REGISTRY).transform((_) => null);
+            ExtensionRegistry.EMPTY_REGISTRY).then((_) => null);
       case WireFormat.WIRETYPE_END_GROUP: // should not happen, but ignore?
         return new Future.immediate(null);
       case WireFormat.WIRETYPE_FIXED32:
-        return readRaw32().transform((_) => null);
+        return readRaw32().then((_) => null);
     }
   }
 
   Future skipRawBytes(int number) {
-    return _readRawBytes(number).transform((_) => null);
+    return _readRawBytes(number).then((_) => null);
   }
 
   void _enableReadAhead(int numberOfBytes) {

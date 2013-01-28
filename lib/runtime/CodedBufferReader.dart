@@ -7,9 +7,9 @@ part of protobuf;
 class CodedBufferReader extends CodedReader {
   PbByteBuffer _input;
 
-  CodedBufferReader.fromBuffer(List<int> _buffer, [
-      int recursionLimit = CodedReader.DEFAULT_RECURSION_LIMIT,
-      int sizeLimit = CodedReader.DEFAULT_SIZE_LIMIT]) :
+  CodedBufferReader.fromBuffer(List<int> _buffer, {
+      int recursionLimit: CodedReader.DEFAULT_RECURSION_LIMIT,
+      int sizeLimit: CodedReader.DEFAULT_SIZE_LIMIT}) :
       super(recursionLimit, sizeLimit),
       _input = new PbByteBuffer.fromList(_buffer);
 

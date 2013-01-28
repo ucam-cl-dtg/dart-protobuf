@@ -50,7 +50,7 @@ class UnknownFieldSet implements Message {
   }
 
 
-  
+
   int get hashCode {
     int hash = 0;
     _fields.forEach((key, value) {
@@ -192,32 +192,32 @@ class UnknownFieldSet_Builder {
     int number = WireFormat.getTagFieldNumber(tag);
     switch (WireFormat.getTagWireType(tag)) {
     case WireFormat.WIRETYPE_VARINT:
-      return input.readInt64().transform((varint) {
+      return input.readInt64().then((varint) {
         mergeVarintField(number, varint);
         return true;
       });
     case WireFormat.WIRETYPE_FIXED64:
-      return input.readFixed64().transform((int fixed64) {
+      return input.readFixed64().then((int fixed64) {
         Packed64 packed = new Packed64.fromInt(fixed64);
         mergeFixed64Field(number, packed);
         return true;
       });
     case WireFormat.WIRETYPE_LENGTH_DELIMITED:
-      return input.readBytes().transform((List<int> bytes) {
+      return input.readBytes().then((List<int> bytes) {
         mergeLengthDelimitedField(number, bytes);
         return true;
       });
     case WireFormat.WIRETYPE_START_GROUP:
       UnknownFieldSet_Builder subBuilder = new UnknownFieldSet_Builder();
       return input.readUnknownFieldSetGroup(number, subBuilder,
-          ExtensionRegistry.EMPTY_REGISTRY).transform( (_) {
+          ExtensionRegistry.EMPTY_REGISTRY).then( (_) {
             mergeGroupField(number, subBuilder.build());
             return true;
           });
     case WireFormat.WIRETYPE_END_GROUP:
       return new Future<bool>.immediate(false);
     case WireFormat.WIRETYPE_FIXED32:
-      return input.readFixed32().transform((int fixed32) {
+      return input.readFixed32().then((int fixed32) {
         mergeFixed32Field(number, fixed32);
         return true;
       });
@@ -236,14 +236,14 @@ class UnknownFieldSet_Builder {
   }
 
   Future mergeFromCodedStreamReader(CodedStreamReader input) {
-    return input.readTag().chain((int tag) {
+    return input.readTag().then((int tag) {
       Future<bool> done;
       if (tag != 0) {
         done = mergeFieldFromStream(tag, input);
       } else {
         done = new Future.immediate(false);
       }
-      return done.chain((bool result) {
+      return done.then((bool result) {
         if(result) {
           return mergeFromCodedStreamReader(input);
         } else {
@@ -371,7 +371,7 @@ class UnknownFieldSet_Field {
     _group.forEach((UnknownFieldSet e) => hash = (hash * 29) + e.hashCode);
     return hash;
   }
-  
+
 
   List<List<int>> get lengthDelimitedList => _lengthDelimited;
   List get varintList => _varint;

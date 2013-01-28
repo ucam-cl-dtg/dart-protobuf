@@ -14,7 +14,7 @@ class ByteListUtils {
   }
 
   static final String HEX_CHARS = "0123456789abcdef";
-  static String toHex(int dec, [int minLength = 2]) {
+  static String toHex(int dec, {int minLength: 2}) {
     List<int> hexCodes = [];
     int len = 0;
     while (len < minLength || dec > 0) {

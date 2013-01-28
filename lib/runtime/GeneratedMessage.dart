@@ -4,7 +4,7 @@
 
 part of protobuf;
 
-class GeneratedMessage implements Message, Hashable {
+class GeneratedMessage implements Message {
 
   BuilderInfo _builderInfo;
   Map<int, dynamic> _fieldValues;
@@ -27,7 +27,7 @@ class GeneratedMessage implements Message, Hashable {
     extensionRegistry = extensionRegistry == null ?
         ExtensionRegistry.EMPTY_REGISTRY : extensionRegistry;
     return builder.mergeFromStream(input, extensionRegistry)
-        .transform((var _) => builder.buildParsed());
+        .then((var _) => builder.buildParsed());
   }
 
   GeneratedMessage(Builder builder)
@@ -65,10 +65,10 @@ class GeneratedMessage implements Message, Hashable {
   }
 
   getField(int tagNumber) {
-    var value = _fieldValues[tagNumber];
+    Object value = _fieldValues[tagNumber];
     // Initialize the field
     if (value == null) {
-      var defaultFunc = _builderInfo.makeDefault(tagNumber);
+      MakeDefaultFunc defaultFunc = _builderInfo.makeDefault(tagNumber);
       if (defaultFunc != null) {
         value = defaultFunc();
       }
@@ -323,9 +323,7 @@ class GeneratedMessage implements Message, Hashable {
       for (int tagNumber in _fieldValues.keys) {
         _memoizedHashCode = (17 * _memoizedHashCode) + tagNumber;
         var value = _fieldValues[tagNumber];
-        if (value is Hashable) {
-          _memoizedHashCode = (31 * _memoizedHashCode) + value.hashCode;
-        }
+        _memoizedHashCode = (31 * _memoizedHashCode) + value.hashCode;
       }
       if (_unknownFields != null) {
         _memoizedHashCode =
@@ -334,7 +332,7 @@ class GeneratedMessage implements Message, Hashable {
     }
     return _memoizedHashCode;
   }
-  
+
 
   void _findInvalidFields(List<String> invalidFields, String prefix) {
     _builderInfo._findInvalidFields(_fieldValues, invalidFields, prefix);
@@ -357,7 +355,7 @@ class GeneratedMessage implements Message, Hashable {
     return _toString();
   }
 
-  String _toString([String indent = ""]) {
+  String _toString({String indent: ""}) {
     StringBuffer s = new StringBuffer();
     void renderValue(key, value) {
       if (value is Message) {
@@ -372,7 +370,7 @@ class GeneratedMessage implements Message, Hashable {
     // Sort output by tag number
     List<FieldInfo> fields = new List<FieldInfo>.from(_builderInfo.fieldInfo.values);
     fields.sort((a, b) => a.tagNumber.compareTo(b.tagNumber));
-    List<String> keys = fields.map((FieldInfo field) => field.name);
+    List<String> keys = fields.mappedBy((FieldInfo field) => field.name);
 
     for (FieldInfo field in fields) {
       if (hasField(field.tagNumber)) {
@@ -644,10 +642,10 @@ class GeneratedMessage implements Message, Hashable {
    * not been set previously, [:null:] is returned.
    */
   getExtension(Extension extension) {
-    var value = _fieldValues[extension.tagNumber];
+    Object value = _fieldValues[extension.tagNumber];
     // Initialize the field
     if (value == null) {
-      var defaultFunc = extension.makeDefault;
+      MakeDefaultFunc defaultFunc = extension.makeDefault;
       if (defaultFunc != null) {
         value = defaultFunc();
       }
@@ -686,7 +684,7 @@ class GeneratedMessage implements Message, Hashable {
       break;
     case Builder._FLOAT_BIT:
     case Builder._DOUBLE_BIT:
-      // Force 'xxx.0' output for integral values 
+      // Force 'xxx.0' output for integral values
       if (fieldValue.floor() == fieldValue) {
         sb.add(fieldValue.floor().toInt());
         sb.add('.0');

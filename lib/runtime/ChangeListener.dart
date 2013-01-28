@@ -5,7 +5,7 @@
 part of protobuf;
 
 //interface ChangeListener {
-//interface 
+//interface
 abstract class ChangeListener {
   void onChanged();
 }

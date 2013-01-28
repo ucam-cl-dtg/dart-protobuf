@@ -251,7 +251,7 @@ class GoogleProtobuf_DescriptorProto_Builder extends Builder {
   void clearOptions() => c_(7);
 }
 
-class GoogleProtobuf_FieldDescriptorProto_Type extends ProtobufEnum implements Hashable {
+class GoogleProtobuf_FieldDescriptorProto_Type extends ProtobufEnum {
   static const GoogleProtobuf_FieldDescriptorProto_Type TYPE_DOUBLE = const GoogleProtobuf_FieldDescriptorProto_Type._(0, 1, 'TYPE_DOUBLE');
   static const GoogleProtobuf_FieldDescriptorProto_Type TYPE_FLOAT = const GoogleProtobuf_FieldDescriptorProto_Type._(1, 2, 'TYPE_FLOAT');
   static const GoogleProtobuf_FieldDescriptorProto_Type TYPE_INT64 = const GoogleProtobuf_FieldDescriptorProto_Type._(2, 3, 'TYPE_INT64');
@@ -310,7 +310,7 @@ class GoogleProtobuf_FieldDescriptorProto_Type extends ProtobufEnum implements H
   const GoogleProtobuf_FieldDescriptorProto_Type._(int i, int v, String n) : super(i, v, n);
 }
 
-class GoogleProtobuf_FieldDescriptorProto_Label extends ProtobufEnum implements Hashable {
+class GoogleProtobuf_FieldDescriptorProto_Label extends ProtobufEnum {
   static GoogleProtobuf_FieldDescriptorProto_Label get LABEL_OPTIONAL => values[0];
   static GoogleProtobuf_FieldDescriptorProto_Label get LABEL_REQUIRED => values[1];
   static GoogleProtobuf_FieldDescriptorProto_Label get LABEL_REPEATED => values[2];
@@ -675,7 +675,7 @@ class GoogleProtobuf_MethodDescriptorProto_Builder extends Builder {
   void clearOptions() => c_(4);
 }
 
-class GoogleProtobuf_FileOptions_OptimizeMode extends ProtobufEnum implements Hashable {
+class GoogleProtobuf_FileOptions_OptimizeMode extends ProtobufEnum {
   static GoogleProtobuf_FileOptions_OptimizeMode get SPEED => values[0];
   static GoogleProtobuf_FileOptions_OptimizeMode get CODE_SIZE => values[1];
   static GoogleProtobuf_FileOptions_OptimizeMode get LITE_RUNTIME => values[2];
@@ -877,7 +877,7 @@ class GoogleProtobuf_MessageOptions_Builder extends Builder {
   List<GoogleProtobuf_UninterpretedOption> get uninterpretedOption => g_(999);
 }
 
-class GoogleProtobuf_FieldOptions_CType extends ProtobufEnum implements Hashable {
+class GoogleProtobuf_FieldOptions_CType extends ProtobufEnum {
   static GoogleProtobuf_FieldOptions_CType get STRING => values[0];
   static GoogleProtobuf_FieldOptions_CType get CORD => values[1];
   static GoogleProtobuf_FieldOptions_CType get STRING_PIECE => values[2];

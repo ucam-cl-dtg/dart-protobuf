@@ -100,13 +100,13 @@ class Packed64 {
 
   static bool get _haveBigInts {
     if (_haveBigIntsCached == null) {
-      var x = 9007199254740992;
+      int x = 9007199254740992;
       // Defeat compile-time constant folding.
       if (2 + 2 != 4) {
         x = 0;
       }
-      var y = x + 1;
-      var same = y == x;
+      int y = x + 1;
+      bool same = y == x;
       _haveBigIntsCached = !same;
     }
     return _haveBigIntsCached;
@@ -278,7 +278,7 @@ class Packed64 {
   int get hashCode {
     return _packed.hashCode;
   }
-  
+
 
   /**
    * Returns the 32 high bits of this [Packed64] value as an unsigned integer
@@ -947,7 +947,7 @@ class PbCodec {
       exp = ((packed64.hi >> 20) & 0x7ff) - 1023;
       mantissa = ((packed64.hi & 0xfffff) << 3) | ((packed64.lo >> 29) & 0x7);
     } else if (packed is num) {
-      var ipacked = packed.toInt();
+      int ipacked = packed.toInt();
       exp = ((ipacked >> 52) & 0x7ff) - 1023;
       mantissa = (ipacked & 0xfffffffffffff) >> 29;
     }
@@ -1047,7 +1047,7 @@ class Base64Codec {
   List<int> _base64InverseChars = null;
   int _padding;
 
-  Base64Codec([String alphabet = null]) {
+  Base64Codec({String alphabet: null}) {
     assert(alphabet == null || alphabet.length == 65);
     if (alphabet == null) {
       alphabet = MIME_ALPHABET;

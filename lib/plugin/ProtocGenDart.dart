@@ -9,6 +9,7 @@ import "package:protobuf/runtime/Protobuf.dart";
 import "dart:io";
 import 'dart:core';
 import 'dart:math';
+import 'dart:async';
 part "protoc/descriptor.pb.dart";
 part "protoc/plugin.pb.dart";
 part "CodeGenerator.dart";
@@ -26,7 +27,7 @@ part "Writer.dart";
 final String DISABLE_STREAMS_FLAG = "disable_streams";
 
 void main() {
-  var config = parseOptions();
+  ProtocGenDartConfig config = parseOptions();
   if (config == null || !config.valid) {
     usage();
   } else {
@@ -62,7 +63,7 @@ void usage() {
 final String OUT_CL_PARAM = "--out";
 final String PARAMETER_CL_PARAM = "--parameter";
 
-ProtocGenDartConfig parseOptions([ProtocGenDartConfig config = null]) {
+ProtocGenDartConfig parseOptions({ProtocGenDartConfig config: null}) {
   Options opts = new Options();
   ProtocGenDartConfig _config = config != null ? config
       : new ProtocGenDartConfig();
