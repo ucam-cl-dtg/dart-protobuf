@@ -330,7 +330,7 @@ class UnknownFieldSet_Builder {
 class UnknownFieldSet_Field {
 
   List<List<int>> _lengthDelimited;
-  List _varint;
+  List<dynamic> _varint;
   List<int> _fixed32;
   List<Packed64> _fixed64;
   List<UnknownFieldSet> _group;

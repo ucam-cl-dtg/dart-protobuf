@@ -47,9 +47,9 @@ class ProtobufField {
   bool get repeats => _repeats;
   bool get single => !repeats;
 
-  bool get group => type == GoogleProtobuf_FieldDescriptorProto_Type.TYPE_GROUP;
-  bool get message => type == GoogleProtobuf_FieldDescriptorProto_Type.TYPE_MESSAGE;
-  bool get enum => type == GoogleProtobuf_FieldDescriptorProto_Type.TYPE_ENUM;
+  bool get group => identical(type, GoogleProtobuf_FieldDescriptorProto_Type.TYPE_GROUP);
+  bool get message => identical(type, GoogleProtobuf_FieldDescriptorProto_Type.TYPE_MESSAGE);
+  bool get enum => identical(type, GoogleProtobuf_FieldDescriptorProto_Type.TYPE_ENUM);
   bool get primitive => !group && !message;
 
   // Initializer to be applied in the initialize() function
@@ -179,9 +179,9 @@ class ProtobufField {
     String _repeatingFieldType(String typeString) => "List<$typeString>";
 
     _required =
-        _field.label == GoogleProtobuf_FieldDescriptorProto_Label.LABEL_REQUIRED;
+        identical(_field.label, GoogleProtobuf_FieldDescriptorProto_Label.LABEL_REQUIRED);
     _repeats =
-        _field.label == GoogleProtobuf_FieldDescriptorProto_Label.LABEL_REPEATED;
+        identical(_field.label, GoogleProtobuf_FieldDescriptorProto_Label.LABEL_REPEATED);
 
     Object write;
     if (repeats) {

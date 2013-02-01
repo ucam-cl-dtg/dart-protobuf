@@ -12,7 +12,7 @@ class ProtobufEnum {
   const ProtobufEnum(this._index, this._value, this._name);
 
   static Map<int, ProtobufEnum> initByValue(List<ProtobufEnum> byIndex) {
-    Map<int, ProtobufEnum> byValue = new Map<int, Object>();
+    Map<int, ProtobufEnum> byValue = new Map<int, dynamic>();
     for (ProtobufEnum v in byIndex) {
       byValue[v.value] = v;
     }

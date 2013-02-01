@@ -6,9 +6,10 @@ library protobuf;
 
 import 'dart:io';
 import 'dart:utf';
-import 'dart:json' as JSON;
+import 'dart:json';
 import 'dart:core';
 import 'dart:async';
+import 'dart:collection';
 import 'dart:scalarlist';
 import 'dart:math' as Math;
 import 'package:bignum/src/fixnum/fixnum.dart';

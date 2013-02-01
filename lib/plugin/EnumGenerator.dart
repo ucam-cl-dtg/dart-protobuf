@@ -30,7 +30,7 @@ class EnumGenerator implements ProtobufContainer {
     for (GoogleProtobuf_EnumValueDescriptorProto value in _descriptor.value) {
       GoogleProtobuf_EnumValueDescriptorProto canonicalValue =
           findValueByNumber(value.number);
-      if (value == canonicalValue) {
+      if (identical(value,canonicalValue)) {
         _canonicalValues.add(value);
       } else {
         _aliases.add(new EnumAlias(value, canonicalValue));
@@ -51,7 +51,7 @@ class EnumGenerator implements ProtobufContainer {
    */
   void generate(IndentingWriter out) {
     out.addBlock("class ${_classname} extends ProtobufEnum "
-        "implements Hashable {", "}\n", () {
+        " {", "}\n", () {
       // -----------------------------------------------------------------
       // define enum types
       int index = 0;

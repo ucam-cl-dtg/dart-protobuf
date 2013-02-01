@@ -18,6 +18,9 @@ class CodeGenerator implements ProtobufContainer {
   void generate() {
     PbInputStreamReader reader = new PbInputStreamReader(_streamIn);
     Future<List<int>> futureBytes = reader.readBytes();
+    futureBytes.catchError( (onError) {
+      print("error: $onError");
+    });
     futureBytes.then((List<int> bytes) {
       _streamIn.close();
       GoogleProtobufCompiler_CodeGeneratorRequest request =

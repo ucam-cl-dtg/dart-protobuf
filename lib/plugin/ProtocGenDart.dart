@@ -10,6 +10,9 @@ import "dart:io";
 import 'dart:core';
 import 'dart:math';
 import 'dart:async';
+import 'dart:scalarlist';
+import 'dart:collection';
+
 part "protoc/descriptor.pb.dart";
 part "protoc/plugin.pb.dart";
 part "CodeGenerator.dart";
