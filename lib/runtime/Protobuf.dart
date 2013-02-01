@@ -6,7 +6,7 @@ library protobuf;
 
 import 'dart:io';
 import 'dart:utf';
-import 'dart:json';
+import 'dart:json' as JSON;
 import 'dart:core';
 import 'dart:async';
 import 'dart:collection';
